@@ -48,7 +48,9 @@ public class menuV2 extends javax.swing.JFrame {
         setIconImage(getIconImage());
         setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(mainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 550));
+
+        mainPanel.setFocusable(false);
+        getContentPane().add(mainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1231, 570));
 
         Users.setText("Menu");
         Users.addActionListener(new java.awt.event.ActionListener() {
@@ -103,7 +105,7 @@ public class menuV2 extends javax.swing.JFrame {
 
     private void AddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddUserActionPerformed
         usersMenu menuUser = new usersMenu();
-        menuUser.setSize(878, 568);
+        menuUser.setSize(1050, 570);
         menuUser.setLocation(5,5);
         
         mainPanel.removeAll();

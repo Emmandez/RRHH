@@ -196,4 +196,28 @@ public class ConnectionDB {
             JOptionPane.showConfirmDialog(null, "El usuario ya existe");
         }
     }
+    
+    public static void changeStatus(int id_user){
+        String consulta = "SP_CHANGE_STATUS_USER '"+id_user+"'";
+        
+        int succeful = CDU(consulta);
+            if(succeful!=0){
+                JOptionPane.showMessageDialog(null, "Usuario actualizado");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
+            }   
+    }
+    
+    public static void updateUser(String username, String password, int id_user){
+        String consulta = "SP_Update_User '"+id_user+"', '"+username+"', '"+password+"'";Connection con = getConnection();
+        
+        int succeful = CDU(consulta);
+            if(succeful!=0){
+                JOptionPane.showMessageDialog(null, "Usuario actualizado");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
+            }
+    }
 }

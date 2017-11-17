@@ -42,8 +42,8 @@ public class ActiveUsersTable extends javax.swing.JPanel {
 
     
 
-    
 
+    
     public void CargarTabla(){
         actUsTa.setDefaultRenderer(Object.class, new Render());
         DefaultTableModel modelo = (DefaultTableModel) actUsTa.getModel();
@@ -255,7 +255,7 @@ public class ActiveUsersTable extends javax.swing.JPanel {
 
         if(row < actUsTa.getRowCount() && row >= 0 && column<actUsTa.getColumnCount() && column>=0){
             Object  value = actUsTa.getValueAt(row, column);
-            Object id = actUsTa.getValueAt(row, 1);
+            Object id = actUsTa.getValueAt(row, 0);
             int id_User = (int) id;
             if(value instanceof JButton){
                 ((JButton) value).doClick();
