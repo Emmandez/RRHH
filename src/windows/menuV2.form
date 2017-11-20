@@ -21,10 +21,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddUserActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="DeleteUser">
+            <MenuItem class="javax.swing.JMenuItem" name="Applicants">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Applicants"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="ApplicantsMouseClicked"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ApplicantsActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

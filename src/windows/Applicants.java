@@ -22,50 +22,20 @@ import static windows.menu.mainPanel;
  *
  * @author Emmanuel
  */
-public class usersMenu extends javax.swing.JPanel {
+public class Applicants extends javax.swing.JPanel {
 
     /**
      * Creates new form usersMenu
      */
-    public usersMenu() {
+    public Applicants() {
         initComponents();
         CargarTabla("SP_Search_Active_Users");
-        loadInactiveUsers();
+        
+        
+        
         
     }
     
-    public void loadInactiveUsers(){
-        inactiveUsers.setDefaultRenderer(Object.class, new Render());
-        DefaultTableModel modelo = (DefaultTableModel) inactiveUsers.getModel();
-        inactiveUsers.setRowHeight(20);
-        
-        //Comienza a contas 0 los renglones
-        modelo.setRowCount(0);
-        
-        ConnectionDB conexion = new ConnectionDB();
-        conexion.getConnection();
-        
-        ResultSet res = ConnectionDB.Query("SELECT * FROM users WHERE active_us = "+0);
-        try{
-            while(res.next()){
-                JButton btnActivate = new JButton("Activate");
-                btnActivate.setBackground(Color.BLUE);
-                btnActivate.setName("btnActivate");
-                
-                Vector v = new Vector();
-                v.add(res.getInt(1));
-                v.add(res.getString(2));
-                v.add(res.getString(3));
-                v.add(res.getString(4));
-                v.add(btnActivate);
-                
-                modelo.addRow(v);
-                inactiveUsers.setModel(modelo);
-                
-            }
-        }catch(SQLException e){
-        }
-    }
     
     public void CargarTabla(String query){
         actUsTa.setDefaultRenderer(Object.class, new Render());
@@ -122,17 +92,10 @@ public class usersMenu extends javax.swing.JPanel {
         Table = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        username = new javax.swing.JTextPane();
-        jLabel6 = new javax.swing.JLabel();
-        password = new javax.swing.JPasswordField();
-        jLabel7 = new javax.swing.JLabel();
-        cpassword = new javax.swing.JPasswordField();
-        roleList = new javax.swing.JComboBox<>();
+        nombre = new javax.swing.JTextPane();
         registerButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         actUsTa = new javax.swing.JTable();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        inactiveUsers = new javax.swing.JTable();
         buscarIdTxt = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         buscarID = new javax.swing.JButton();
@@ -140,44 +103,41 @@ public class usersMenu extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         buscarNombre = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         showAllUsersBtn = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        app = new javax.swing.JTextPane();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        apm = new javax.swing.JTextPane();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        expLab = new javax.swing.JTextPane();
+        jLabel12 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        expSal = new javax.swing.JTextPane();
+        jLabel13 = new javax.swing.JLabel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        puesto = new javax.swing.JTextPane();
+        jLabel14 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        Table.setBackground(new java.awt.Color(51, 0, 255));
+        Table.setBackground(new java.awt.Color(0, 204, 0));
         Table.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Username");
-        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 0, -1, -1));
+        jLabel5.setText("Nombre");
+        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 0, -1, -1));
 
-        username.addKeyListener(new java.awt.event.KeyAdapter() {
+        nombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                usernameKeyTyped(evt);
+                nombreKeyTyped(evt);
             }
         });
-        jScrollPane1.setViewportView(username);
+        jScrollPane1.setViewportView(nombre);
 
-        Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 20, 260, -1));
-
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel6.setText("Password");
-        Table.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 50, -1, -1));
-
-        password.setText("123");
-        Table.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 70, 260, -1));
-
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("Confirm Password");
-        Table.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 100, -1, -1));
-
-        cpassword.setText("321");
-        Table.add(cpassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 120, 260, -1));
-
-        roleList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ROLE", "ADMIN", "USER" }));
-        Table.add(roleList, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 160, 260, -1));
+        Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 260, -1));
 
         registerButton.setText("Register");
         registerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -185,35 +145,35 @@ public class usersMenu extends javax.swing.JPanel {
                 registerButtonActionPerformed(evt);
             }
         });
-        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 200, -1, -1));
+        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 110, -1, -1));
 
         actUsTa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Username", "Password", "Role", "Delete", "Update", "Deactivate"
+                "ID", "Nombre", "Apellido P", "Apellido M", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "Delete", "Update", "HIre"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, false, false, false, false
+                false, true, true, true, true, true, true, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -240,62 +200,13 @@ public class usersMenu extends javax.swing.JPanel {
             actUsTa.getColumnModel().getColumn(4).setResizable(false);
             actUsTa.getColumnModel().getColumn(5).setResizable(false);
             actUsTa.getColumnModel().getColumn(6).setResizable(false);
+            actUsTa.getColumnModel().getColumn(7).setResizable(false);
+            actUsTa.getColumnModel().getColumn(7).setPreferredWidth(10);
+            actUsTa.getColumnModel().getColumn(8).setPreferredWidth(10);
+            actUsTa.getColumnModel().getColumn(9).setPreferredWidth(10);
         }
 
-        Table.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 690, 260));
-
-        inactiveUsers.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Username", "Password", "ROLE", "Activate"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        inactiveUsers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                inactiveUsersMouseClicked(evt);
-            }
-        });
-        jScrollPane3.setViewportView(inactiveUsers);
-        if (inactiveUsers.getColumnModel().getColumnCount() > 0) {
-            inactiveUsers.getColumnModel().getColumn(0).setResizable(false);
-            inactiveUsers.getColumnModel().getColumn(1).setResizable(false);
-            inactiveUsers.getColumnModel().getColumn(2).setResizable(false);
-            inactiveUsers.getColumnModel().getColumn(3).setResizable(false);
-            inactiveUsers.getColumnModel().getColumn(4).setResizable(false);
-        }
-
-        Table.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 300, 510, 260));
+        Table.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 1210, 260));
 
         buscarIdTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,7 +221,7 @@ public class usersMenu extends javax.swing.JPanel {
         Table.add(buscarIdTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 196, -1));
 
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Buscar Usuario por ID");
+        jLabel8.setText("Buscar Candidato por ID");
         Table.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
 
         buscarID.setText("Buscar");
@@ -323,7 +234,7 @@ public class usersMenu extends javax.swing.JPanel {
         Table.add(buscarNombreTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 200, -1));
 
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Buscar Usuario por nombre");
+        jLabel9.setText("Buscar Candidato por nombre");
         Table.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
 
         buscarNombre.setText("Buscar");
@@ -335,12 +246,8 @@ public class usersMenu extends javax.swing.JPanel {
         Table.add(buscarNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, -1, -1));
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Usuarios Activos");
+        jLabel1.setText("Candidatos Activos");
         Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 270, -1, -1));
-
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Usuarios Inactivos");
-        Table.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 270, -1, -1));
 
         showAllUsersBtn.setText("Mostrar Todos");
         showAllUsersBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -348,12 +255,77 @@ public class usersMenu extends javax.swing.JPanel {
                 showAllUsersBtnMouseClicked(evt);
             }
         });
-        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 260, 120, -1));
+        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 260, 120, -1));
+
+        app.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                appKeyTyped(evt);
+            }
+        });
+        jScrollPane3.setViewportView(app);
+
+        Table.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 70, 260, -1));
+
+        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel10.setText("Apellido Paterno");
+        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 50, -1, -1));
+
+        apm.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                apmKeyTyped(evt);
+            }
+        });
+        jScrollPane4.setViewportView(apm);
+
+        Table.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 120, 260, -1));
+
+        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel11.setText("Apellido Materno");
+        Table.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 100, -1, -1));
+
+        expLab.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                expLabKeyTyped(evt);
+            }
+        });
+        jScrollPane5.setViewportView(expLab);
+
+        Table.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 170, 260, -1));
+
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("Experiencia  Laboral");
+        Table.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 150, -1, -1));
+
+        expSal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                expSalKeyTyped(evt);
+            }
+        });
+        jScrollPane6.setViewportView(expSal);
+
+        Table.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 20, 260, -1));
+
+        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel13.setText("Expectativa Salarial");
+        Table.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 0, -1, -1));
+
+        puesto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                puestoKeyTyped(evt);
+            }
+        });
+        jScrollPane7.setViewportView(puesto);
+
+        Table.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 70, 260, -1));
+
+        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel14.setText("Puesto Deseado");
+        Table.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 50, -1, -1));
 
         add(Table, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1230, 570));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void usernameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usernameKeyTyped
+    private void nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreKeyTyped
         char validate = evt.getKeyChar();
 
         if(!Character.isLetter(validate)){
@@ -363,44 +335,17 @@ public class usersMenu extends javax.swing.JPanel {
 
             JOptionPane.showMessageDialog(null, "Ingresar solo letras");
         }
-    }//GEN-LAST:event_usernameKeyTyped
+    }//GEN-LAST:event_nombreKeyTyped
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
         //Register new user
         ConnectionDB conexion = new ConnectionDB();
         conexion.getConnection();
 
-        String username = this.username.getText();
-        String pass = new String(password.getPassword());
-        String cpass = new String(cpassword.getPassword());
-        String role = String.valueOf(this.roleList.getSelectedItem());
+        String username = this.nombre.getText();
+        
         boolean exists = conexion.existingUser(username);
 
-        if(Validations.userLength(username, pass)){
-            if(!username.equals("admin")){
-                //Validate if the username already exists
-                if(exists){
-                    //Create new user
-                    if(pass.equals(cpass)){
-                        if(!role.equals("ROLE")){
-                            conexion.createUser(username, pass, role);
-                            this.username.setText("");
-                            this.password.setText("");
-                            this.cpassword.setText("");
-                            CargarTabla("SP_Search_Active_Users");
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(null, "Selecciona un Rol", null, JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden", null, JOptionPane.ERROR_MESSAGE);
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(null, "Ya existe ese nombre de usuario");
-                }
-            }
-        }
 
     }//GEN-LAST:event_registerButtonActionPerformed
 
@@ -444,7 +389,7 @@ public class usersMenu extends javax.swing.JPanel {
                         ConnectionDB con = new ConnectionDB();
                         con.changeStatus(id_User);
                         CargarTabla("SP_Search_Active_Users");
-                        loadInactiveUsers();
+                        
                     }
                 }
             }
@@ -461,34 +406,6 @@ public class usersMenu extends javax.swing.JPanel {
         String consulta = "SELECT * FROM users WHERE id_user = "+id_user;
         CargarTabla(consulta);
     }//GEN-LAST:event_buscarIDMouseClicked
-
-    private void inactiveUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactiveUsersMouseClicked
-        int column = inactiveUsers.getColumnModel().getColumnIndexAtX(evt.getX());
-        int row = evt.getY()/inactiveUsers.getRowHeight();
-
-        if(row < inactiveUsers.getRowCount() && row >= 0 && column<inactiveUsers.getColumnCount() && column>=0){
-            Object  value = inactiveUsers.getValueAt(row, column);
-            Object id = inactiveUsers.getValueAt(row, 0);
-            int id_User = (int) id;
-            if(value instanceof JButton){
-                ((JButton) value).doClick();
-                JButton boton = (JButton) value;
-                if(boton.getName().equals("btnActivate")){
-                    //Query para activar
-                    int option = JOptionPane.showConfirmDialog(null, "Do you really want to reactivate this user?",
-                        "Warning", JOptionPane.YES_NO_OPTION);
-                    if(option == JOptionPane.YES_OPTION){
-                        ConnectionDB con = new ConnectionDB();
-                        con.changeStatus(id_User);
-                        CargarTabla("SP_Search_Active_Users");
-                        loadInactiveUsers();
-                    }
-                }
-            }
-        }
-        
-        
-    }//GEN-LAST:event_inactiveUsersMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
        char validate = evt.getKeyChar();
@@ -513,30 +430,57 @@ public class usersMenu extends javax.swing.JPanel {
         CargarTabla(consulta);
     }//GEN-LAST:event_buscarNombreMouseClicked
 
+    private void appKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_appKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_appKeyTyped
+
+    private void apmKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_apmKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_apmKeyTyped
+
+    private void expLabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expLabKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_expLabKeyTyped
+
+    private void expSalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expSalKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_expSalKeyTyped
+
+    private void puestoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_puestoKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_puestoKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Table;
     private javax.swing.JTable actUsTa;
+    private javax.swing.JTextPane apm;
+    private javax.swing.JTextPane app;
     private javax.swing.JButton buscarID;
     private javax.swing.JTextField buscarIdTxt;
     private javax.swing.JButton buscarNombre;
     private javax.swing.JTextField buscarNombreTxt;
-    private javax.swing.JPasswordField cpassword;
-    private javax.swing.JTable inactiveUsers;
+    private javax.swing.JTextPane expLab;
+    private javax.swing.JTextPane expSal;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JPasswordField password;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JTextPane nombre;
+    private javax.swing.JTextPane puesto;
     private javax.swing.JButton registerButton;
-    private javax.swing.JComboBox<String> roleList;
     private javax.swing.JButton showAllUsersBtn;
-    private javax.swing.JTextPane username;
     // End of variables declaration//GEN-END:variables
 }

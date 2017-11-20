@@ -40,7 +40,7 @@ public class menuV2 extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         Users = new javax.swing.JMenu();
         AddUser = new javax.swing.JMenuItem();
-        DeleteUser = new javax.swing.JMenuItem();
+        Applicants = new javax.swing.JMenuItem();
         Logout = new javax.swing.JMenu();
         Exit = new javax.swing.JMenu();
 
@@ -72,8 +72,18 @@ public class menuV2 extends javax.swing.JFrame {
         });
         Users.add(AddUser);
 
-        DeleteUser.setText("Applicants");
-        Users.add(DeleteUser);
+        Applicants.setText("Applicants");
+        Applicants.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ApplicantsMouseClicked(evt);
+            }
+        });
+        Applicants.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ApplicantsActionPerformed(evt);
+            }
+        });
+        Users.add(Applicants);
 
         menuBar.add(Users);
 
@@ -136,6 +146,21 @@ public class menuV2 extends javax.swing.JFrame {
         back.setVisible(true);
     }//GEN-LAST:event_LogoutMouseClicked
 
+    private void ApplicantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApplicantsActionPerformed
+        Applicants applicants = new Applicants();
+        applicants.setSize(1050, 570);
+        applicants.setLocation(5,5);
+        
+        mainPanel.removeAll();
+        mainPanel.add(applicants, BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();   
+    }//GEN-LAST:event_ApplicantsActionPerformed
+
+    private void ApplicantsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ApplicantsMouseClicked
+             
+    }//GEN-LAST:event_ApplicantsMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -174,7 +199,7 @@ public class menuV2 extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem AddUser;
-    private javax.swing.JMenuItem DeleteUser;
+    private javax.swing.JMenuItem Applicants;
     private javax.swing.JMenu Exit;
     private javax.swing.JMenu Logout;
     private javax.swing.JMenu Users;
