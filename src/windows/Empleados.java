@@ -12,11 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -29,7 +27,7 @@ import static windows.menu.mainPanel;
  *
  * @author Emmanuel
  */
-public class Applicants extends javax.swing.JPanel {
+public class Empleados extends javax.swing.JPanel {
 
     /**
      * Stored Procedures candidatos
@@ -39,17 +37,17 @@ public class Applicants extends javax.swing.JPanel {
      * SP_Delete_Candidato
      * SP_Update_Candidato
      */
-    public Applicants() {
+    public Empleados() {
         initComponents();
-        CargarTabla("SP_Show_Candidatos");
+        CargarTabla("SELECT * FROM empleado");
         
     }
     
     
     public void CargarTabla(String query){
-        applicantsTable.setDefaultRenderer(Object.class, new Render());
-        DefaultTableModel modelo = (DefaultTableModel) applicantsTable.getModel();
-        applicantsTable.setRowHeight(20);
+        empleadosTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) empleadosTable.getModel();
+        empleadosTable.setRowHeight(20);
         //Comienza a contar 0 los renglones
         modelo.setRowCount(0);
         
@@ -67,9 +65,9 @@ public class Applicants extends javax.swing.JPanel {
                 btnUpdate.setBackground(Color.green);   
                 btnUpdate.setName("btnUpdate");
                 
-                JButton btnHire = new JButton("Hire");
-                btnHire.setBackground(Color.BLUE);
-                btnHire.setName("btnHire");
+                JButton btnDeactivate = new JButton("Hire");
+                btnDeactivate.setBackground(Color.BLUE);
+                btnDeactivate.setName("btnHire");
                 
                 JButton btnPhone = new JButton("Phone");
                 btnPhone.setName("btnPhone");
@@ -87,8 +85,8 @@ public class Applicants extends javax.swing.JPanel {
                 v.add(res.getString(3));
                 v.add(res.getString(4));
                 v.add(res.getString(5));
-                v.add(res.getInt(6));
-                v.add(res.getString(7));
+                v.add(res.getString(6));
+                
                 //contact, add email and phone
                 v.add(btnEmail);
                 v.add(btnPhone);
@@ -96,11 +94,11 @@ public class Applicants extends javax.swing.JPanel {
                 //delete, hire and update
                 v.add(btnDelete);
                 v.add(btnUpdate);
-                v.add(btnHire);
+                v.add(btnDeactivate);
                 
                 modelo.addRow(v);
 
-                applicantsTable.setModel(modelo);
+                empleadosTable.setModel(modelo);
             }
         }
         catch(SQLException e){
@@ -123,7 +121,7 @@ public class Applicants extends javax.swing.JPanel {
         nombre = new javax.swing.JTextPane();
         registerButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        applicantsTable = new javax.swing.JTable();
+        empleadosTable = new javax.swing.JTable();
         buscarIdTxt = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         buscarID = new javax.swing.JButton();
@@ -152,7 +150,7 @@ public class Applicants extends javax.swing.JPanel {
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        Table.setBackground(new java.awt.Color(220, 204, 204));
+        Table.setBackground(new java.awt.Color(153, 153, 255));
         Table.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
@@ -186,33 +184,33 @@ public class Applicants extends javax.swing.JPanel {
         });
         Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 370, -1, -1));
 
-        applicantsTable.setModel(new javax.swing.table.DefaultTableModel(
+        empleadosTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido P", "Apellido M", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "email", "phone", "contact", "Hire", "Update", "Delete"
+                "ID", "Nombre", "Apellido P", "Apellido M", "RFC", "Email", "Phone", "Contact", "Update", "Delete"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true, true, false, false, false, false, false, false
+                false, true, true, true, true, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -223,34 +221,30 @@ public class Applicants extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        applicantsTable.getTableHeader().setReorderingAllowed(false);
-        applicantsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        empleadosTable.getTableHeader().setReorderingAllowed(false);
+        empleadosTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                applicantsTableMouseClicked(evt);
+                empleadosTableMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(applicantsTable);
-        if (applicantsTable.getColumnModel().getColumnCount() > 0) {
-            applicantsTable.getColumnModel().getColumn(0).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(0).setPreferredWidth(7);
-            applicantsTable.getColumnModel().getColumn(1).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(2).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(3).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(4).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(5).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(6).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(7).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(7).setPreferredWidth(10);
-            applicantsTable.getColumnModel().getColumn(8).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(8).setPreferredWidth(10);
-            applicantsTable.getColumnModel().getColumn(9).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(9).setPreferredWidth(10);
-            applicantsTable.getColumnModel().getColumn(10).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(10).setPreferredWidth(10);
-            applicantsTable.getColumnModel().getColumn(11).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(11).setPreferredWidth(10);
-            applicantsTable.getColumnModel().getColumn(12).setResizable(false);
-            applicantsTable.getColumnModel().getColumn(12).setPreferredWidth(10);
+        jScrollPane2.setViewportView(empleadosTable);
+        if (empleadosTable.getColumnModel().getColumnCount() > 0) {
+            empleadosTable.getColumnModel().getColumn(0).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+            empleadosTable.getColumnModel().getColumn(1).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(2).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(3).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(4).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(5).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(5).setPreferredWidth(8);
+            empleadosTable.getColumnModel().getColumn(6).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(6).setPreferredWidth(8);
+            empleadosTable.getColumnModel().getColumn(7).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(7).setPreferredWidth(8);
+            empleadosTable.getColumnModel().getColumn(8).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(8).setPreferredWidth(8);
+            empleadosTable.getColumnModel().getColumn(9).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(9).setPreferredWidth(8);
         }
 
         Table.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 500, 1350, 260));
@@ -268,7 +262,7 @@ public class Applicants extends javax.swing.JPanel {
         Table.add(buscarIdTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 196, -1));
 
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Buscar Candidato por ID");
+        jLabel8.setText("Buscar Empleado por ID");
         Table.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
 
         buscarID.setText("Buscar");
@@ -281,7 +275,7 @@ public class Applicants extends javax.swing.JPanel {
         Table.add(buscarNombreTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 420, 200, -1));
 
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Buscar Candidato por nombre");
+        jLabel9.setText("Buscar Empleado por nombre");
         Table.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, -1, -1));
 
         buscarNombre.setText("Buscar");
@@ -294,7 +288,7 @@ public class Applicants extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Candidatos Activos");
+        jLabel1.setText("Empleados Activos");
         Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 460, -1, 30));
 
         showAllUsersBtn.setText("Mostrar Todos");
@@ -402,14 +396,14 @@ public class Applicants extends javax.swing.JPanel {
 
     
     
-    private void applicantsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_applicantsTableMouseClicked
+    private void empleadosTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_empleadosTableMouseClicked
 
-        int column = applicantsTable.getColumnModel().getColumnIndexAtX(evt.getX());
-        int row = evt.getY()/applicantsTable.getRowHeight();
+        int column = empleadosTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/empleadosTable.getRowHeight();
 
-        if(row < applicantsTable.getRowCount() && row >= 0 && column<applicantsTable.getColumnCount() && column>=0){
-            Object  value = applicantsTable.getValueAt(row, column);
-            Object id = applicantsTable.getValueAt(row, 0);
+        if(row < empleadosTable.getRowCount() && row >= 0 && column<empleadosTable.getColumnCount() && column>=0){
+            Object  value = empleadosTable.getValueAt(row, column);
+            Object id = empleadosTable.getValueAt(row, 0);
             int id_User = (int) id;
             if(value instanceof JButton){
                 ((JButton) value).doClick();
@@ -427,12 +421,12 @@ public class Applicants extends javax.swing.JPanel {
                             break;
                         }
                     case "btnUpdate":
-                        String nname = (String) applicantsTable.getValueAt(row, 1);
-                        String nlastn = (String) applicantsTable.getValueAt(row, 2);
-                        String nlastnm = (String) applicantsTable.getValueAt(row, 3);
-                        String nexLab = (String) applicantsTable.getValueAt(row, 4);
-                        int nexpSal = (int) applicantsTable.getValueAt(row, 5);
-                        String puestoP = (String) applicantsTable.getValueAt(row, 6);
+                        String nname = (String) empleadosTable.getValueAt(row, 1);
+                        String nlastn = (String) empleadosTable.getValueAt(row, 2);
+                        String nlastnm = (String) empleadosTable.getValueAt(row, 3);
+                        String nexLab = (String) empleadosTable.getValueAt(row, 4);
+                        int nexpSal = (int) empleadosTable.getValueAt(row, 5);
+                        String puestoP = (String) empleadosTable.getValueAt(row, 6);
                         ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
                         CargarTabla("SP_Show_Candidatos");
                         break;
@@ -441,40 +435,9 @@ public class Applicants extends javax.swing.JPanel {
                             //query desactivar user
                             int option = JOptionPane.showConfirmDialog(null, "Do you really want to hire this applicant?",
                                     "Warning", JOptionPane.YES_NO_OPTION);
-                            if(option == JOptionPane.YES_OPTION){
-                                JFrame frame = new JFrame("Agregar Telefono");
-                                JPanel pane = new JPanel();
-                                pane.setLayout(new GridLayout(0, 2, 2, 2));                                
-                                
-                                JTextField rfc_J = new JTextField();
-                                String[] genArray = {"Femenino","Masculino"};
-                                JComboBox genero_J = new JComboBox(genArray);
-                                
-                                pane.add(new JLabel("Género"));
-                                pane.add(genero_J);
-                                
-                                pane.add(new JLabel("RFC:"));
-                                pane.add(rfc_J);
-                                
-                                option = JOptionPane.showConfirmDialog(frame, pane, "Añadir datos faltantes", JOptionPane.OK_OPTION);
-                                if(option==JOptionPane.OK_OPTION){
-                                    String rfc = rfc_J.getText();
-                                    String genero = String.valueOf(genero_J.getSelectedItem());
-                                    String name = (String) applicantsTable.getValueAt(row, 1);
-                                    String lastn = (String) applicantsTable.getValueAt(row, 2);
-                                    String lastnm = (String) applicantsTable.getValueAt(row, 3);
-                                    
-                                    String consulta = "SP_Insert_Empleado '"+name+"', '"+lastn+"', '"+lastnm+"', '"
-                                            +rfc+"', '"+genero+"'";
-                                    
-                                    int x = ConnectionDB.CDU(consulta);
-                                    if(x!=0){
-                                        JOptionPane.showMessageDialog(null, "Candidato contratado");
-                                    }
-                                    else{
-                                        JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
-                                    }
-                                }
+                            if(option == JOptionPane.YES_OPTION){                                
+                                ConnectionDB.changeStatus(id_User);
+                                CargarTabla("SP_Show_Candidatos");
                                 
                             }       break;
                         }
@@ -509,10 +472,6 @@ public class Applicants extends javax.swing.JPanel {
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);   
                                 ConnectionDB.phoneCandidato(id_User);
                             }
-                            else{
-                                JOptionPane.showMessageDialog(null,"El formato del telefono no es correcto.",
-                                        "Error",JOptionPane.ERROR_MESSAGE);
-                            }
                         }
                         break;
                     }
@@ -541,54 +500,12 @@ public class Applicants extends javax.swing.JPanel {
                                 ConnectionDB.insertEmail(mEmail, mDesc);   
                                 ConnectionDB.emailCandidato(id_User);
                             }
-                            else{
-                                JOptionPane.showMessageDialog(null,"El formato del email no es correcto.",
-                                    "Error",JOptionPane.ERROR_MESSAGE);
-                            }
                         } 
                         break;
                     }
                     case "btnContact":
                     {
-                        JFrame frame = new JFrame("Agregar Email");
-                        JPanel pane = new JPanel();
-                        pane.setLayout(new GridLayout(0, 2, 2, 2));
                         
-                        try{
-                            ResultSet res = ConnectionDB.Query("SP_Get_Phones '"+id_User+"'");
-                            int rows = 0;
-                            while(res.next()){
-                                rows++;
-                                pane.add(new  JLabel("Teléfono "+rows));
-                                pane.add(new JLabel(res.getString(12)));
-                                
-                                pane.add(new  JLabel("Extensión "));
-                                pane.add(new JLabel(res.getString(13)));
-                                
-                                pane.add(new  JLabel("Descripción "));
-                                pane.add(new JLabel(res.getString(14)));
-                                
-                                pane.add(new JLabel(""));
-                                pane.add(new JLabel(""));
-                                
-                            }
-                            res = ConnectionDB.Query("SP_Get_Email_Candidato '"+id_User+"'");
-                            while(res.next()){
-                                rows++;
-                                pane.add(new  JLabel("Correo "+rows));
-                                pane.add(new JLabel(res.getString(12)));
-                                
-                                pane.add(new  JLabel("Descripcion "));
-                                pane.add(new JLabel(res.getString(13)));
-                                
-                                pane.add(new JLabel(""));
-                                pane.add(new JLabel(""));
-                            }
-                            
-                            JOptionPane.showMessageDialog(frame, pane, "Información de contacto", INFORMATION_MESSAGE);
-                            
-                        }catch(SQLException e){
-                        }                        
                         break;
                     }
                     default:
@@ -597,7 +514,7 @@ public class Applicants extends javax.swing.JPanel {
             }
             
         }
-    }//GEN-LAST:event_applicantsTableMouseClicked
+    }//GEN-LAST:event_empleadosTableMouseClicked
 
     private void buscarIdTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarIdTxtActionPerformed
         // TODO add your handling code here:
@@ -690,11 +607,11 @@ public class Applicants extends javax.swing.JPanel {
     private javax.swing.JPanel Table;
     private javax.swing.JTextPane apm;
     private javax.swing.JTextPane app;
-    private javax.swing.JTable applicantsTable;
     private javax.swing.JButton buscarID;
     private javax.swing.JTextField buscarIdTxt;
     private javax.swing.JButton buscarNombre;
     private javax.swing.JTextField buscarNombreTxt;
+    private javax.swing.JTable empleadosTable;
     private javax.swing.JTextPane expLab;
     private javax.swing.JTextPane expSal;
     private javax.swing.JLabel jLabel1;

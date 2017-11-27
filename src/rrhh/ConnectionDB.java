@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
  * @author Emmanuel
  */
 public class ConnectionDB {
+    
     public static Connection getConnection(){
         Connection conexion = null;
         try{
@@ -219,5 +220,76 @@ public class ConnectionDB {
             else{
                 JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
             }
+    }
+    
+    public static void createApplicant(String name, String lastn, String lastnm, String expLabo, String salario,
+            String puesto){
+        
+
+        //Stored procedure
+        String consulta = "SP_Insert_Candidato '"+name+"' , '"+lastn+"' , '"+lastnm+"' , '"+expLabo+"', '"+salario+"', '"+puesto+"'";
+
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+            JOptionPane.showMessageDialog(null, "Candidatp insertado correctamente");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
+        }
+    }
+    
+    public static void deleteApplicantId(int id_applicant){
+        String consulta = "SP_Delete_Candidato '"+id_applicant+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+        JOptionPane.showMessageDialog(null, "Candidato Eliminado correctamente");
+        }
+    }
+    
+    public static void updateApplicant(String name, String lastn, String lastnm, String expLabo, int salario,
+            String puesto, int id_candidato){
+        String consulta = "SP_Update_Candidato '"+id_candidato+"', '"+name+"', '"+lastn+"', '"+lastnm+"', '"
+                +expLabo+"', '"+salario+"', '"+puesto+"'";
+        
+        int succeful = CDU(consulta);
+            if(succeful!=0){
+                JOptionPane.showMessageDialog(null, "Candidato actualizado");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
+            }
+    }
+    
+    public static void insertPhone(String number, String ext, String desc){
+        String consulta = "SP_Insert_Phone '"+number+"', '"+ext+"', '"+desc+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+
+        }
+    }
+    
+    public static void insertEmail(String email, String desc){
+        String consulta = "SP_Insert_Email '"+email+"', '"+desc+"'";
+        int succeful = CDU(consulta);
+        if(succeful==0){
+            JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
+        }
+    }
+    
+    public static void emailCandidato(int id_candidato){
+        String consulta = "SP_Email_Candidato '"+id_candidato+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+            JOptionPane.showMessageDialog(null, "Se agregó un Email a este candidato");
+        }
+    }
+    
+    
+    public static void phoneCandidato(int id_candidato){
+        String consulta = "SP_Phone_Candidato '"+id_candidato+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+            JOptionPane.showMessageDialog(null, "Se agregó un número de teléfono a este candidato");
+        }
     }
 }

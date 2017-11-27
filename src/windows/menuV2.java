@@ -18,7 +18,6 @@ public class menuV2 extends javax.swing.JFrame {
     
     public menuV2() {
         initComponents();
-        
         this.setLocationRelativeTo(null);   
     }
     
@@ -41,16 +40,24 @@ public class menuV2 extends javax.swing.JFrame {
         Users = new javax.swing.JMenu();
         AddUser = new javax.swing.JMenuItem();
         Applicants = new javax.swing.JMenuItem();
+        employeesBtn = new javax.swing.JMenuItem();
         Logout = new javax.swing.JMenu();
         Exit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(getIconImage());
         setUndecorated(true);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        mainPanel.setFocusable(false);
-        getContentPane().add(mainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1231, 570));
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1366, Short.MAX_VALUE)
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 745, Short.MAX_VALUE)
+        );
 
         Users.setText("Menu");
         Users.addActionListener(new java.awt.event.ActionListener() {
@@ -85,6 +92,14 @@ public class menuV2 extends javax.swing.JFrame {
         });
         Users.add(Applicants);
 
+        employeesBtn.setText("Employees");
+        employeesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                employeesBtnActionPerformed(evt);
+            }
+        });
+        Users.add(employeesBtn);
+
         menuBar.add(Users);
 
         Logout.setText("Log Out");
@@ -110,12 +125,23 @@ public class menuV2 extends javax.swing.JFrame {
 
         setJMenuBar(menuBar);
 
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void AddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddUserActionPerformed
         usersMenu menuUser = new usersMenu();
-        menuUser.setSize(1050, 570);
+        menuUser.setSize(1366, 768);
         menuUser.setLocation(5,5);
         
         mainPanel.removeAll();
@@ -148,7 +174,7 @@ public class menuV2 extends javax.swing.JFrame {
 
     private void ApplicantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApplicantsActionPerformed
         Applicants applicants = new Applicants();
-        applicants.setSize(1050, 570);
+        applicants.setSize(1366, 768);
         applicants.setLocation(5,5);
         
         mainPanel.removeAll();
@@ -160,6 +186,18 @@ public class menuV2 extends javax.swing.JFrame {
     private void ApplicantsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ApplicantsMouseClicked
              
     }//GEN-LAST:event_ApplicantsMouseClicked
+
+    private void employeesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeesBtnActionPerformed
+        Empleados empleados = new Empleados();
+        empleados.setSize(1366, 768);
+        empleados.setLocation(5,5);
+        
+        mainPanel.removeAll();
+        mainPanel.add(empleados, BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();  
+        
+    }//GEN-LAST:event_employeesBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,7 +241,8 @@ public class menuV2 extends javax.swing.JFrame {
     private javax.swing.JMenu Exit;
     private javax.swing.JMenu Logout;
     private javax.swing.JMenu Users;
-    public static javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuItem employeesBtn;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 }
