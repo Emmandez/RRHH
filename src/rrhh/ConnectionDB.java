@@ -284,6 +284,15 @@ public class ConnectionDB {
         }
     }
     
+    public static void updatePhone(int id_tel, String number, String ext, String desc){
+        String consulta = "SP_Update_Phone '"+id_tel+"', '"+number+"', '"+desc+"', '"+ext+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+            JOptionPane.showMessageDialog(null, "Teléfono actualizado correctamente");
+        }
+        
+    }
+    
     
     public static void phoneCandidato(int id_candidato){
         String consulta = "SP_Phone_Candidato '"+id_candidato+"'";

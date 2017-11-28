@@ -137,15 +137,10 @@ public class Empleados extends javax.swing.JPanel {
         apm = new javax.swing.JTextPane();
         jLabel11 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        expLab = new javax.swing.JTextPane();
+        rfc = new javax.swing.JTextPane();
         jLabel12 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        expSal = new javax.swing.JTextPane();
-        jLabel13 = new javax.swing.JLabel();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        puesto = new javax.swing.JTextPane();
-        jLabel14 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        generoJ = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -182,7 +177,7 @@ public class Empleados extends javax.swing.JPanel {
                 registerButtonKeyPressed(evt);
             }
         });
-        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 370, -1, -1));
+        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 310, -1, -1));
 
         empleadosTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -325,47 +320,24 @@ public class Empleados extends javax.swing.JPanel {
         jLabel11.setText("Apellido Materno");
         Table.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 160, -1, -1));
 
-        expLab.addKeyListener(new java.awt.event.KeyAdapter() {
+        rfc.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                expLabKeyTyped(evt);
+                rfcKeyTyped(evt);
             }
         });
-        jScrollPane5.setViewportView(expLab);
+        jScrollPane5.setViewportView(rfc);
 
         Table.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 230, 260, -1));
 
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel12.setText("Experiencia  Laboral");
-        Table.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 210, -1, -1));
-
-        expSal.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                expSalKeyTyped(evt);
-            }
-        });
-        jScrollPane6.setViewportView(expSal);
-
-        Table.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 280, 260, -1));
-
-        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel13.setText("Expectativa Salarial");
-        Table.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 260, -1, -1));
-
-        puesto.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                puestoKeyTyped(evt);
-            }
-        });
-        jScrollPane7.setViewportView(puesto);
-
-        Table.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 330, 260, -1));
-
-        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel14.setText("Puesto Deseado");
-        Table.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 310, -1, -1));
+        jLabel12.setText("RFC");
+        Table.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 210, -1, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add_user.png"))); // NOI18N
         Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 0, -1, -1));
+
+        generoJ.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Género", "Femenino", "Masculino" }));
+        Table.add(generoJ, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 270, 260, 30));
 
         add(Table, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1366, 768));
     }// </editor-fold>//GEN-END:initComponents
@@ -558,44 +530,34 @@ public class Empleados extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_apmKeyTyped
 
-    private void expLabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expLabKeyTyped
+    private void rfcKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rfcKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_expLabKeyTyped
-
-    private void expSalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expSalKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_expSalKeyTyped
-
-    private void puestoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_puestoKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_puestoKeyTyped
+    }//GEN-LAST:event_rfcKeyTyped
 
     private void registerButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_registerButtonKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_registerButtonKeyPressed
 
     private void registerButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerButtonMouseClicked
-        ConnectionDB conexion = new ConnectionDB();
-        conexion.getConnection();
+        ConnectionDB.getConnection();        
         
         String name = nombre.getText();
         String lastn = app.getText();
         String lastnm = apm.getText();
-        String expLabo = expLab.getText();
-        String salario = expSal.getText();
-        String puestoP = puesto.getText();
+        String rfc_e = rfc.getText();
+        String genero = String.valueOf(this.generoJ.getSelectedItem());
+        
         
         if(Validations.length50Empty(name) && Validations.length50Empty(lastn) &&
-                Validations.length50Empty(lastnm) && Validations.length50Empty(expLabo)
-                && Validations.length50Empty(salario) && Validations.length50Empty(puestoP)){
-            conexion.createApplicant(name, lastn, lastnm, expLabo, salario, puestoP);
+                Validations.length50Empty(lastnm) && Validations.length50Empty(rfc_e)){
+            
+            ConnectionDB.CDU("SP");
             CargarTabla("SP_Show_Candidatos");
             nombre.setText("");
             app.setText("");
             apm.setText("");
-            expLab.setText("");
-            expSal.setText("");
-            puesto.setText("");
+            rfc.setText("");
+            
         }
 
         
@@ -612,14 +574,11 @@ public class Empleados extends javax.swing.JPanel {
     private javax.swing.JButton buscarNombre;
     private javax.swing.JTextField buscarNombreTxt;
     private javax.swing.JTable empleadosTable;
-    private javax.swing.JTextPane expLab;
-    private javax.swing.JTextPane expSal;
+    private javax.swing.JComboBox<String> generoJ;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
@@ -629,11 +588,9 @@ public class Empleados extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTextPane nombre;
-    private javax.swing.JTextPane puesto;
     private javax.swing.JButton registerButton;
+    private javax.swing.JTextPane rfc;
     private javax.swing.JButton showAllUsersBtn;
     // End of variables declaration//GEN-END:variables
 }

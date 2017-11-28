@@ -36,6 +36,7 @@ public class menuV2 extends javax.swing.JFrame {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         Users = new javax.swing.JMenu();
         AddUser = new javax.swing.JMenuItem();
@@ -48,15 +49,23 @@ public class menuV2 extends javax.swing.JFrame {
         setIconImage(getIconImage());
         setUndecorated(true);
 
+        jLabel1.setText("jLabel1");
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1366, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGap(512, 512, 512)
+                .addComponent(jLabel1)
+                .addContainerGap(813, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 745, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addComponent(jLabel1)
+                .addContainerGap(663, Short.MAX_VALUE))
         );
 
         Users.setText("Menu");
@@ -242,6 +251,7 @@ public class menuV2 extends javax.swing.JFrame {
     private javax.swing.JMenu Logout;
     private javax.swing.JMenu Users;
     private javax.swing.JMenuItem employeesBtn;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables

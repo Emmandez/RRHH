@@ -42,14 +42,89 @@ public class Applicants extends javax.swing.JPanel {
     public Applicants() {
         initComponents();
         CargarTabla("SP_Show_Candidatos");
-        
+        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono JOIN candidato on tel_candidato.id_candidato= candidato.id_candidato");
+        CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");        
     }
     
-    
+    public void CargarEmailTable(String query){
+        /*"SELECT numero, extension, desc_tel FROM telefono "
+                + "JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono "
+                + "JOIN candidato on tel_candidato.id_candidato= candidato.id_candidato"
+                        */
+        emailTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) emailTable.getModel();
+        emailTable.setRowHeight(25);
+        //Comienza a contar 0 los renglones
+        modelo.setRowCount(0);
+        ConnectionDB.getConnection();
+        ResultSet res = ConnectionDB.Query(query);
+        try{
+            while(res.next()){
+                JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(Color.red);
+                btnDelete.setName("btnDelete");
+
+                JButton btnUpdate = new JButton("Update");
+                btnUpdate.setBackground(Color.green);   
+                btnUpdate.setName("btnUpdate");
+                
+                 Vector v = new Vector();
+                //data user
+                v.add(res.getInt(1));
+                v.add(res.getString(2));
+                v.add(res.getString(3));
+                v.add(btnUpdate);
+                v.add(btnDelete);
+                modelo.addRow(v);
+
+                emailTable.setModel(modelo);            
+                
+                
+            }
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla email", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public void CargarTelTable(String query){
+        phonesTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) phonesTable.getModel();
+        phonesTable.setRowHeight(25);
+        modelo.setRowCount(0);
+        
+        ConnectionDB.getConnection();
+        ResultSet res = ConnectionDB.Query(query);
+        
+        try{
+            while(res.next()){
+                JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(Color.red);
+                btnDelete.setName("btnDelete");
+
+                JButton btnUpdate = new JButton("Update");
+                btnUpdate.setBackground(Color.green);   
+                btnUpdate.setName("btnUpdate");
+                
+                Vector v = new Vector();
+                v.add(res.getInt(1));
+                v.add(res.getString(2));
+                v.add(res.getString(3));
+                v.add(res.getString(4));
+                v.add(btnUpdate);
+                v.add(btnDelete);
+                        
+                modelo.addRow(v);
+                
+                phonesTable.setModel(modelo);
+            }
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla teléfonos", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }
     public void CargarTabla(String query){
         applicantsTable.setDefaultRenderer(Object.class, new Render());
         DefaultTableModel modelo = (DefaultTableModel) applicantsTable.getModel();
-        applicantsTable.setRowHeight(20);
+        
         //Comienza a contar 0 los renglones
         modelo.setRowCount(0);
         
@@ -94,9 +169,9 @@ public class Applicants extends javax.swing.JPanel {
                 v.add(btnPhone);
                 v.add(btnContact);
                 //delete, hire and update
-                v.add(btnDelete);
                 v.add(btnUpdate);
                 v.add(btnHire);
+                v.add(btnDelete);
                 
                 modelo.addRow(v);
 
@@ -104,7 +179,7 @@ public class Applicants extends javax.swing.JPanel {
             }
         }
         catch(SQLException e){
-
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla Candidatos", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -125,8 +200,8 @@ public class Applicants extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         applicantsTable = new javax.swing.JTable();
         buscarIdTxt = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
         buscarID = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
         buscarNombreTxt = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         buscarNombre = new javax.swing.JButton();
@@ -148,6 +223,16 @@ public class Applicants extends javax.swing.JPanel {
         puesto = new javax.swing.JTextPane();
         jLabel14 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        phonesTable = new javax.swing.JTable();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        emailTable = new javax.swing.JTable();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        addressTable = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -157,7 +242,7 @@ public class Applicants extends javax.swing.JPanel {
 
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Nombre");
-        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 60, -1, -1));
+        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 340, -1, -1));
 
         nombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -166,7 +251,7 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(nombre);
 
-        Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 80, 260, -1));
+        Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 360, 260, -1));
 
         registerButton.setText("Register");
         registerButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -184,7 +269,7 @@ public class Applicants extends javax.swing.JPanel {
                 registerButtonKeyPressed(evt);
             }
         });
-        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 370, -1, -1));
+        Table.add(registerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 650, -1, -1));
 
         applicantsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -205,7 +290,7 @@ public class Applicants extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido P", "Apellido M", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "email", "phone", "contact", "Hire", "Update", "Delete"
+                "ID", "Nombre", "Apellido P", "Apellido M", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "email", "phone", "contact", "Update", "Hire", "Delete"
             }
         ) {
             Class[] types = new Class [] {
@@ -223,6 +308,7 @@ public class Applicants extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        applicantsTable.setRowHeight(25);
         applicantsTable.getTableHeader().setReorderingAllowed(false);
         applicantsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -253,7 +339,7 @@ public class Applicants extends javax.swing.JPanel {
             applicantsTable.getColumnModel().getColumn(12).setPreferredWidth(10);
         }
 
-        Table.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 500, 1350, 260));
+        Table.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 1340, 200));
 
         buscarIdTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -265,11 +351,7 @@ public class Applicants extends javax.swing.JPanel {
                 buscarIdTxtKeyPressed(evt);
             }
         });
-        Table.add(buscarIdTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 196, -1));
-
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Buscar Candidato por ID");
-        Table.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
+        Table.add(buscarIdTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 196, -1));
 
         buscarID.setText("Buscar");
         buscarID.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -277,12 +359,16 @@ public class Applicants extends javax.swing.JPanel {
                 buscarIDMouseClicked(evt);
             }
         });
-        Table.add(buscarID, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, -1, -1));
-        Table.add(buscarNombreTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 420, 200, -1));
+        Table.add(buscarID, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
+
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Buscar Candidato por ID");
+        Table.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
+        Table.add(buscarNombreTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 200, -1));
 
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Buscar Candidato por nombre");
-        Table.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 400, -1, -1));
+        Table.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, -1, -1));
 
         buscarNombre.setText("Buscar");
         buscarNombre.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -290,12 +376,12 @@ public class Applicants extends javax.swing.JPanel {
                 buscarNombreMouseClicked(evt);
             }
         });
-        Table.add(buscarNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, -1, -1));
+        Table.add(buscarNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 50, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Candidatos Activos");
-        Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 460, -1, 30));
+        jLabel1.setText("Teléfonos");
+        Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 310, -1, 30));
 
         showAllUsersBtn.setText("Mostrar Todos");
         showAllUsersBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -303,7 +389,7 @@ public class Applicants extends javax.swing.JPanel {
                 showAllUsersBtnMouseClicked(evt);
             }
         });
-        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 460, 120, -1));
+        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 60, 120, -1));
 
         app.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -312,11 +398,11 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane3.setViewportView(app);
 
-        Table.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 130, 260, -1));
+        Table.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 410, 260, -1));
 
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Apellido Paterno");
-        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 110, -1, -1));
+        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 390, -1, -1));
 
         apm.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -325,11 +411,11 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane4.setViewportView(apm);
 
-        Table.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 180, 260, -1));
+        Table.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 460, 260, -1));
 
         jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Apellido Materno");
-        Table.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 160, -1, -1));
+        Table.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 440, -1, -1));
 
         expLab.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -338,11 +424,11 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane5.setViewportView(expLab);
 
-        Table.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 230, 260, -1));
+        Table.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 510, 260, -1));
 
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("Experiencia  Laboral");
-        Table.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 210, -1, -1));
+        Table.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 490, -1, -1));
 
         expSal.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -351,11 +437,11 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane6.setViewportView(expSal);
 
-        Table.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 280, 260, -1));
+        Table.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 560, 260, -1));
 
         jLabel13.setForeground(new java.awt.Color(0, 0, 0));
         jLabel13.setText("Expectativa Salarial");
-        Table.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 260, -1, -1));
+        Table.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 540, -1, -1));
 
         puesto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -364,14 +450,148 @@ public class Applicants extends javax.swing.JPanel {
         });
         jScrollPane7.setViewportView(puesto);
 
-        Table.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 330, 260, -1));
+        Table.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 610, 260, -1));
 
         jLabel14.setForeground(new java.awt.Color(0, 0, 0));
         jLabel14.setText("Puesto Deseado");
-        Table.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 310, -1, -1));
+        Table.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 590, -1, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add_user.png"))); // NOI18N
-        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 0, -1, -1));
+        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 300, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Candidatos Activos");
+        Table.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 60, -1, 30));
+
+        jLabel2.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Email");
+        Table.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 310, -1, 30));
+
+        phonesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Teléfono", "Extensión", "Descripcion", "Update", "Delete"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        phonesTable.setRowHeight(25);
+        phonesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                phonesTableMouseClicked(evt);
+            }
+        });
+        jScrollPane10.setViewportView(phonesTable);
+        if (phonesTable.getColumnModel().getColumnCount() > 0) {
+            phonesTable.getColumnModel().getColumn(0).setResizable(false);
+            phonesTable.getColumnModel().getColumn(0).setPreferredWidth(3);
+            phonesTable.getColumnModel().getColumn(1).setResizable(false);
+            phonesTable.getColumnModel().getColumn(2).setResizable(false);
+            phonesTable.getColumnModel().getColumn(2).setPreferredWidth(5);
+            phonesTable.getColumnModel().getColumn(3).setResizable(false);
+            phonesTable.getColumnModel().getColumn(4).setResizable(false);
+            phonesTable.getColumnModel().getColumn(4).setPreferredWidth(8);
+            phonesTable.getColumnModel().getColumn(5).setResizable(false);
+            phonesTable.getColumnModel().getColumn(5).setPreferredWidth(8);
+        }
+
+        Table.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 530, 150));
+
+        emailTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Email", "Descripción", "Update", "Delete"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        emailTable.setRowHeight(25);
+        jScrollPane11.setViewportView(emailTable);
+        if (emailTable.getColumnModel().getColumnCount() > 0) {
+            emailTable.getColumnModel().getColumn(0).setResizable(false);
+            emailTable.getColumnModel().getColumn(0).setPreferredWidth(3);
+            emailTable.getColumnModel().getColumn(1).setResizable(false);
+            emailTable.getColumnModel().getColumn(2).setResizable(false);
+            emailTable.getColumnModel().getColumn(3).setResizable(false);
+            emailTable.getColumnModel().getColumn(3).setPreferredWidth(8);
+            emailTable.getColumnModel().getColumn(4).setResizable(false);
+            emailTable.getColumnModel().getColumn(4).setPreferredWidth(8);
+        }
+
+        Table.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 340, 530, 150));
+
+        addressTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Calle", "Número Ext.", "Número Int.", "Colonia", "CP", "Estado", "Update", "Delete"
+            }
+        ));
+        addressTable.setRowHeight(25);
+        jScrollPane12.setViewportView(addressTable);
+
+        Table.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, 1080, 200));
+
+        jLabel6.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Dirección");
+        Table.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 510, 100, 30));
+
+        jButton1.setText("Limpiar Busquedas");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        Table.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 10, 150, -1));
 
         add(Table, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1366, 768));
     }// </editor-fold>//GEN-END:initComponents
@@ -411,6 +631,12 @@ public class Applicants extends javax.swing.JPanel {
             Object  value = applicantsTable.getValueAt(row, column);
             Object id = applicantsTable.getValueAt(row, 0);
             int id_User = (int) id;
+            String oldName = (String) applicantsTable.getValueAt(row, 1);
+            String oldLastName = (String) applicantsTable.getValueAt(row, 2);
+            String oldLastNameM = (String) applicantsTable.getValueAt(row, 3);
+            String oldExpLab = (String) applicantsTable.getValueAt(row, 4);
+            int oldNExpSal = (int) applicantsTable.getValueAt(row, 5);
+            String OldpuestoP = (String) applicantsTable.getValueAt(row, 6);
             if(value instanceof JButton){
                 ((JButton) value).doClick();
                 JButton boton = (JButton) value;
@@ -434,7 +660,7 @@ public class Applicants extends javax.swing.JPanel {
                         int nexpSal = (int) applicantsTable.getValueAt(row, 5);
                         String puestoP = (String) applicantsTable.getValueAt(row, 6);
                         ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
-                        CargarTabla("SP_Show_Candidatos");
+                        CargarTabla("SP_Show_Candidatos"); 
                         break;
                     case "btnHire":
                         {
@@ -508,10 +734,6 @@ public class Applicants extends javax.swing.JPanel {
                             if(Validations.numericPhoneNumber(numeroTel)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);   
                                 ConnectionDB.phoneCandidato(id_User);
-                            }
-                            else{
-                                JOptionPane.showMessageDialog(null,"El formato del telefono no es correcto.",
-                                        "Error",JOptionPane.ERROR_MESSAGE);
                             }
                         }
                         break;
@@ -604,10 +826,10 @@ public class Applicants extends javax.swing.JPanel {
     }//GEN-LAST:event_buscarIdTxtActionPerformed
 
     private void buscarIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarIDMouseClicked
-
         int id_user = Integer.parseInt(buscarIdTxt.getText());
-        String consulta = "SELECT * FROM users WHERE id_user = "+id_user;
-        CargarTabla(consulta);
+        CargarTabla("SELECT * FROM candidato WHERE id_candidato = "+id_user);
+        CargarEmailTable("SP_Get_Email_Candidato '"+id_user+"'");
+        CargarTelTable("SP_Get_Tel_Candidato '"+id_user+"'"); 
     }//GEN-LAST:event_buscarIDMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
@@ -685,9 +907,43 @@ public class Applicants extends javax.swing.JPanel {
         
     }//GEN-LAST:event_registerButtonMouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void phonesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phonesTableMouseClicked
+        // FALTA AÑADIR EL update y delete
+        int column = phonesTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/phonesTable.getRowHeight();
+
+        if(row < phonesTable.getRowCount() && row >= 0 && column<phonesTable.getColumnCount() && column>=0){
+            Object  value = phonesTable.getValueAt(row, column);
+            Object id = phonesTable.getValueAt(row, 0);
+            int id_User = (int) id;
+            if(value instanceof JButton){
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+                switch (boton.getName()) {
+                    case "btnUpdate":
+                        String number = (String) phonesTable.getValueAt(row, 1);
+                        String ext    = (String) phonesTable.getValueAt(row, 2);
+                        String desc   = (String) phonesTable.getValueAt(row, 3);
+                        ConnectionDB.updatePhone(id_User, number, ext, desc);
+                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
+                                + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        break;
+                    case "btnDelete":
+                        break;
+                            
+                }
+            }
+        }
+    }//GEN-LAST:event_phonesTableMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Table;
+    private javax.swing.JTable addressTable;
     private javax.swing.JTextPane apm;
     private javax.swing.JTextPane app;
     private javax.swing.JTable applicantsTable;
@@ -695,19 +951,27 @@ public class Applicants extends javax.swing.JPanel {
     private javax.swing.JTextField buscarIdTxt;
     private javax.swing.JButton buscarNombre;
     private javax.swing.JTextField buscarNombreTxt;
+    private javax.swing.JTable emailTable;
     private javax.swing.JTextPane expLab;
     private javax.swing.JTextPane expSal;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -715,6 +979,7 @@ public class Applicants extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTextPane nombre;
+    private javax.swing.JTable phonesTable;
     private javax.swing.JTextPane puesto;
     private javax.swing.JButton registerButton;
     private javax.swing.JButton showAllUsersBtn;
