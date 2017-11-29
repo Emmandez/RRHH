@@ -42,8 +42,16 @@ public class Applicants extends javax.swing.JPanel {
     public Applicants() {
         initComponents();
         CargarTabla("SP_Show_Candidatos");
-        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono JOIN candidato on tel_candidato.id_candidato= candidato.id_candidato");
+        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
         CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");        
+        CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado "
+                + "FROM direccion JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia JOIN colonia_ciudad "
+                + "ON colonia.id_colonia = colonia_ciudad.id_colonia JOIN ciudad "
+                + "ON colonia_ciudad.id_ciudad = ciudad.id_ciudad JOIN ciudad_estado "
+                + "ON ciudad.id_ciudad=ciudad_estado.id_ciudad JOIN estado "
+                + "ON ciudad_estado.id_estado=estado.id_estado");
+        
     }
     
     public void CargarEmailTable(String query){
@@ -107,8 +115,8 @@ public class Applicants extends javax.swing.JPanel {
                 Vector v = new Vector();
                 v.add(res.getInt(1));
                 v.add(res.getString(2));
-                v.add(res.getString(3));
                 v.add(res.getString(4));
+                v.add(res.getString(3));
                 v.add(btnUpdate);
                 v.add(btnDelete);
                         
@@ -119,6 +127,45 @@ public class Applicants extends javax.swing.JPanel {
         }catch(SQLException e){
             JOptionPane.showMessageDialog(null, "Error al cargar la tabla teléfonos", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+    }
+    public void CargarAddressTable(String query){
+        addressTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) addressTable.getModel();
+        modelo.setRowCount(0);
+        ConnectionDB.getConnection();
+        
+        ResultSet res = ConnectionDB.Query(query);
+        try{
+            while(res.next()){
+                JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(Color.red);
+                btnDelete.setName("btnDelete");
+                
+                JButton btnUpdate = new JButton("Update");
+                btnUpdate.setBackground(Color.green);   
+                btnUpdate.setName("btnUpdate");
+                
+                Vector v = new Vector();
+                v.add(res.getInt(1));
+                v.add(res.getString(2));
+                v.add(res.getString(3));
+                v.add(res.getString(4));
+                v.add(res.getString(5));
+                v.add(res.getString(6));
+                v.add(res.getString(7));
+                v.add(res.getString(8));
+                v.add(btnUpdate);
+                v.add(btnDelete);
+                
+                modelo.addRow(v);
+                addressTable.setModel(modelo);
+                
+            }
+        }
+        catch(SQLException e){
+        }
+        
         
     }
     public void CargarTabla(String query){
@@ -152,8 +199,8 @@ public class Applicants extends javax.swing.JPanel {
                 JButton btnEmail = new JButton("Email");
                 btnEmail.setName("btnEmail");
                 
-                JButton btnContact = new JButton("Contact");
-                btnContact.setName("btnContact");
+                JButton btnAddress = new JButton("Address");
+                btnAddress.setName("btnAddress");
                 
                 Vector v = new Vector();
                 //data user
@@ -165,9 +212,9 @@ public class Applicants extends javax.swing.JPanel {
                 v.add(res.getInt(6));
                 v.add(res.getString(7));
                 //contact, add email and phone
+                v.add(btnAddress);
                 v.add(btnEmail);
                 v.add(btnPhone);
-                v.add(btnContact);
                 //delete, hire and update
                 v.add(btnUpdate);
                 v.add(btnHire);
@@ -290,11 +337,11 @@ public class Applicants extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido P", "Apellido M", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "email", "phone", "contact", "Update", "Hire", "Delete"
+                "ID", "Nombre", "Apellido Paterno", "Apellido Materno", "Experiencla Lab.", "Expectativa Salarial", "Puesto que aspira", "Address", "Email", "Phone", "Update", "Hire", "Delete"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, true, true, true, true, true, false, false, false, false, false, false
@@ -546,6 +593,11 @@ public class Applicants extends javax.swing.JPanel {
             }
         });
         emailTable.setRowHeight(25);
+        emailTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                emailTableMouseClicked(evt);
+            }
+        });
         jScrollPane11.setViewportView(emailTable);
         if (emailTable.getColumnModel().getColumnCount() > 0) {
             emailTable.getColumnModel().getColumn(0).setResizable(false);
@@ -562,21 +614,53 @@ public class Applicants extends javax.swing.JPanel {
 
         addressTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Calle", "Número Ext.", "Número Int.", "Colonia", "CP", "Estado", "Update", "Delete"
+                "ID", "Calle", "Número Ext.", "Número Int.", "Colonia", "CP", "Ciudad", "Estado", "Update", "Delete"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, true, true, true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         addressTable.setRowHeight(25);
         jScrollPane12.setViewportView(addressTable);
+        if (addressTable.getColumnModel().getColumnCount() > 0) {
+            addressTable.getColumnModel().getColumn(0).setResizable(false);
+            addressTable.getColumnModel().getColumn(0).setPreferredWidth(7);
+            addressTable.getColumnModel().getColumn(1).setResizable(false);
+            addressTable.getColumnModel().getColumn(2).setResizable(false);
+            addressTable.getColumnModel().getColumn(2).setPreferredWidth(5);
+            addressTable.getColumnModel().getColumn(3).setResizable(false);
+            addressTable.getColumnModel().getColumn(3).setPreferredWidth(5);
+            addressTable.getColumnModel().getColumn(4).setResizable(false);
+            addressTable.getColumnModel().getColumn(5).setResizable(false);
+            addressTable.getColumnModel().getColumn(6).setResizable(false);
+            addressTable.getColumnModel().getColumn(7).setResizable(false);
+            addressTable.getColumnModel().getColumn(8).setResizable(false);
+            addressTable.getColumnModel().getColumn(8).setPreferredWidth(8);
+            addressTable.getColumnModel().getColumn(9).setResizable(false);
+            addressTable.getColumnModel().getColumn(9).setPreferredWidth(8);
+        }
 
         Table.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, 1080, 200));
 
@@ -626,11 +710,17 @@ public class Applicants extends javax.swing.JPanel {
 
         int column = applicantsTable.getColumnModel().getColumnIndexAtX(evt.getX());
         int row = evt.getY()/applicantsTable.getRowHeight();
+        
 
         if(row < applicantsTable.getRowCount() && row >= 0 && column<applicantsTable.getColumnCount() && column>=0){
             Object  value = applicantsTable.getValueAt(row, column);
             Object id = applicantsTable.getValueAt(row, 0);
             int id_User = (int) id;
+            
+            CargarEmailTable("SP_Get_Email_Candidato '"+id_User+"'");
+            CargarTelTable("SP_Get_Tel_Candidato '"+id_User+"'"); 
+            CargarAddressTable("SP_Get_Add_Candidato '"+id_User+"'");
+            
             String oldName = (String) applicantsTable.getValueAt(row, 1);
             String oldLastName = (String) applicantsTable.getValueAt(row, 2);
             String oldLastNameM = (String) applicantsTable.getValueAt(row, 3);
@@ -668,7 +758,7 @@ public class Applicants extends javax.swing.JPanel {
                             int option = JOptionPane.showConfirmDialog(null, "Do you really want to hire this applicant?",
                                     "Warning", JOptionPane.YES_NO_OPTION);
                             if(option == JOptionPane.YES_OPTION){
-                                JFrame frame = new JFrame("Agregar Telefono");
+                                JFrame frame = new JFrame("Contratar Candidato");
                                 JPanel pane = new JPanel();
                                 pane.setLayout(new GridLayout(0, 2, 2, 2));                                
                                 
@@ -694,8 +784,34 @@ public class Applicants extends javax.swing.JPanel {
                                             +rfc+"', '"+genero+"'";
                                     
                                     int x = ConnectionDB.CDU(consulta);
+                                    
                                     if(x!=0){
                                         JOptionPane.showMessageDialog(null, "Candidato contratado");
+                                        
+                                        //Agregar la información de contacto de este candidato con el nuevo el nuevo empleado
+                                        
+                                        //Se obtienen los id de los telefonos para después relacionarlos con los empleados
+                                        ResultSet telefonos = ConnectionDB.Query("SP_Get_Tel_Candidato '"+id_User+"'");
+                                        try{
+                                            while(telefonos.next()){     
+                                                ConnectionDB.CDU("SP_Insert_Rel_Tel_Emp '"+telefonos.getInt(1)+"'");
+                                            }
+                                            ConnectionDB.Query("SP_Delete_Rel_Tel_Can '"+id_User+"'");
+                                        }
+                                        catch(SQLException e){
+                                            JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
+                                        }
+                                        
+                                        ResultSet correos = ConnectionDB.Query(consulta);
+                                        try{
+                                            while(correos.next()){                                                
+                                                ConnectionDB.CDU("SP_Insert_Rel_Email_Emp '"+correos.getInt(1)+"'");
+                                            }
+                                            ConnectionDB.Query("SP_Delete_Rel_Email_Can '"+id_User+"'");
+                                        }
+                                        catch(SQLException e){
+                                            JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
+                                        }                                       
                                     }
                                     else{
                                         JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
@@ -704,7 +820,63 @@ public class Applicants extends javax.swing.JPanel {
                                 
                             }       break;
                         }
+                    case "btnAddress":
+                    {
+                        JFrame frame = new JFrame("Agregar Dirección");
+                        JPanel pane = new JPanel();
+                        pane.setLayout(new GridLayout(0, 2, 2, 2));
                         
+                        JTextField JTcalle = new JTextField();
+                        JTextField JTnumInt = new JTextField();
+                        JTextField JTnumExt = new JTextField();
+                        JTextField JTcolonia = new JTextField();
+                        JTextField JTciudad = new JTextField();
+                        JTextField JTestado = new JTextField();
+                        JTextField JCP = new JTextField();
+                        
+                        pane.add(new JLabel("Calle: "));
+                        pane.add(JTcalle);
+                        
+                        pane.add(new JLabel("Número Int: "));
+                        pane.add(JTnumInt);
+                        
+                        pane.add(new JLabel("Número Ext: "));
+                        pane.add(JTnumExt);
+                        
+                        pane.add(new JLabel("Colonia: "));
+                        pane.add(JTcolonia);
+                        
+                        pane.add(new JLabel("Código Postal: "));
+                        pane.add(JCP);
+                        
+                        pane.add(new JLabel("Ciudad: "));
+                        pane.add(JTciudad);
+                        
+                        pane.add(new JLabel("Estado: "));
+                        pane.add(JTestado);
+                        
+                        int option = JOptionPane.showConfirmDialog(frame, pane, "Añadir Dirección", JOptionPane.OK_OPTION);
+                        if(option==JOptionPane.OK_OPTION){
+                            String calle = JTcalle.getText();
+                            String nInt = JTnumInt.getText();
+                            String nExt = JTnumExt.getText();
+                            String colonia = JTcolonia.getText();
+                            String cp = JCP.getText();
+                            String ciudad = JTciudad.getText();
+                            String estado = JTestado.getText();
+                            
+                            if(Validations.length50Empty(calle) && Validations.length5Empty(nInt) 
+                                    && Validations.length5Empty(nExt) && Validations.length50Empty(colonia)
+                                    && Validations.length50Empty(ciudad) && Validations.length50Empty(estado)){
+                                ConnectionDB.CDU("SP_Insert_Address '"+calle+"', '"+nInt+"', '"+nExt+"', '"+colonia
+                                        +"', '"+cp+"', '"+ciudad+"', '"+estado+"'");
+                                ConnectionDB.CDU("SP_Insert_Add_Can '"+id_User+"'");
+                            }
+                            
+                        }
+
+                        break;
+                    }
                     case "btnPhone":
                     {
                         JFrame frame = new JFrame("Agregar Telefono");
@@ -734,6 +906,7 @@ public class Applicants extends javax.swing.JPanel {
                             if(Validations.numericPhoneNumber(numeroTel)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);   
                                 ConnectionDB.phoneCandidato(id_User);
+                                CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
                             }
                         }
                         break;
@@ -762,6 +935,7 @@ public class Applicants extends javax.swing.JPanel {
                             if(Validations.validateEmail(mEmail)){
                                 ConnectionDB.insertEmail(mEmail, mDesc);   
                                 ConnectionDB.emailCandidato(id_User);
+                                CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");                                
                             }
                             else{
                                 JOptionPane.showMessageDialog(null,"El formato del email no es correcto.",
@@ -772,45 +946,14 @@ public class Applicants extends javax.swing.JPanel {
                     }
                     case "btnContact":
                     {
-                        JFrame frame = new JFrame("Agregar Email");
-                        JPanel pane = new JPanel();
-                        pane.setLayout(new GridLayout(0, 2, 2, 2));
                         
-                        try{
-                            ResultSet res = ConnectionDB.Query("SP_Get_Phones '"+id_User+"'");
-                            int rows = 0;
-                            while(res.next()){
-                                rows++;
-                                pane.add(new  JLabel("Teléfono "+rows));
-                                pane.add(new JLabel(res.getString(12)));
-                                
-                                pane.add(new  JLabel("Extensión "));
-                                pane.add(new JLabel(res.getString(13)));
-                                
-                                pane.add(new  JLabel("Descripción "));
-                                pane.add(new JLabel(res.getString(14)));
-                                
-                                pane.add(new JLabel(""));
-                                pane.add(new JLabel(""));
-                                
-                            }
-                            res = ConnectionDB.Query("SP_Get_Email_Candidato '"+id_User+"'");
-                            while(res.next()){
-                                rows++;
-                                pane.add(new  JLabel("Correo "+rows));
-                                pane.add(new JLabel(res.getString(12)));
-                                
-                                pane.add(new  JLabel("Descripcion "));
-                                pane.add(new JLabel(res.getString(13)));
-                                
-                                pane.add(new JLabel(""));
-                                pane.add(new JLabel(""));
-                            }
-                            
-                            JOptionPane.showMessageDialog(frame, pane, "Información de contacto", INFORMATION_MESSAGE);
-                            
-                        }catch(SQLException e){
-                        }                        
+                        /*CARGAR LAS TABLAS TELEFONO E EMAIL CON LOS 
+                          DATOS DE CONTACTO DE LA PERSONA
+                        */
+                        
+                        CargarEmailTable("SP_Get_Email_Candidato '"+id_User+"'");
+                        CargarTelTable("SP_Get_Tel_Candidato '"+id_User+"'"); 
+                                                
                         break;
                     }
                     default:
@@ -830,6 +973,7 @@ public class Applicants extends javax.swing.JPanel {
         CargarTabla("SELECT * FROM candidato WHERE id_candidato = "+id_user);
         CargarEmailTable("SP_Get_Email_Candidato '"+id_user+"'");
         CargarTelTable("SP_Get_Tel_Candidato '"+id_user+"'"); 
+        buscarID.setText("");
     }//GEN-LAST:event_buscarIDMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
@@ -847,12 +991,13 @@ public class Applicants extends javax.swing.JPanel {
     }//GEN-LAST:event_showAllUsersBtnMouseClicked
 
     private void buscarNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarNombreMouseClicked
-        String username = buscarNombreTxt.getText();
-        String consulta = "SP_Search_User_Like '"+username+"'";
-        
-        buscarIdTxt.setText("");
-        buscarNombreTxt.setText("");
-        CargarTabla(consulta);
+//        String username = buscarNombreTxt.getText();
+//        
+//        //String consulta = "SP_Search_User_Like '"+username+"'";
+//        
+//        buscarIdTxt.setText("");
+//        buscarNombreTxt.setText("");
+//        CargarTabla(consulta);
     }//GEN-LAST:event_buscarNombreMouseClicked
 
     private void appKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_appKeyTyped
@@ -912,7 +1057,6 @@ public class Applicants extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void phonesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phonesTableMouseClicked
-        // FALTA AÑADIR EL update y delete
         int column = phonesTable.getColumnModel().getColumnIndexAtX(evt.getX());
         int row = evt.getY()/phonesTable.getRowHeight();
 
@@ -933,12 +1077,52 @@ public class Applicants extends javax.swing.JPanel {
                                 + "ON telefono.id_telefono= tel_candidato.id_telefono");
                         break;
                     case "btnDelete":
+                        int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this phone?",
+                                    "Warning", JOptionPane.YES_NO_OPTION);
+                        if(option == JOptionPane.YES_OPTION){
+                            ConnectionDB.CDU("SP_Delete_Tel_Candidato '"+id_User+"'");
+                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
+                                + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        }       
                         break;
                             
                 }
             }
         }
     }//GEN-LAST:event_phonesTableMouseClicked
+
+    private void emailTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_emailTableMouseClicked
+        int column = emailTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/emailTable.getRowHeight();
+
+        if(row < emailTable.getRowCount() && row >= 0 && column<emailTable.getColumnCount() && column>=0){
+            Object  value = emailTable.getValueAt(row, column);
+            Object id = emailTable.getValueAt(row, 0);
+            int id_User = (int) id;
+            if(value instanceof JButton){
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+                switch (boton.getName()) {
+                    case "btnUpdate":
+                        String email = (String) emailTable.getValueAt(row, 1);
+                        String desc    = (String) emailTable.getValueAt(row, 2);
+                        ConnectionDB.updateEmail(id_User, email, desc);
+                        CargarTelTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                                + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
+                        break;
+                    case "btnDelete":
+                        int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this email?",
+                                    "Warning", JOptionPane.YES_NO_OPTION);
+                        if(option == JOptionPane.YES_OPTION){
+                            ConnectionDB.CDU("DELETE FROM telefono where id_telefono ="+id_User);
+                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
+                                + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        }       
+                        break;                   
+                }
+            }
+        }
+    }//GEN-LAST:event_emailTableMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

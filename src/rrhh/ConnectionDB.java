@@ -289,8 +289,21 @@ public class ConnectionDB {
         int succeful = CDU(consulta);
         if(succeful!=0){
             JOptionPane.showMessageDialog(null, "Teléfono actualizado correctamente");
+        }else{
+            JOptionPane.showMessageDialog(null, "Error al actualizar Teléfono. Contacte al Administrador");
         }
         
+    }
+    
+    public static void updateEmail(int id_email, String email, String desc){
+        String consulta = "SP_Update_Email '"+id_email+"', '"+email+"', '"+desc+"'";
+        int succeful = CDU(consulta);
+        if(succeful!=0){
+            JOptionPane.showMessageDialog(null, "Email Actualizado Correctamente");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Error al actualizar Email. Contacte al Administrador");
+        }
     }
     
     

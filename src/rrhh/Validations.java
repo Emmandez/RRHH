@@ -54,6 +54,24 @@ public class Validations {
         return flag;
     }
     
+    public static boolean length5Empty(String string){
+        boolean flag = false;
+        
+        if(string != null && !string.isEmpty()){
+            if(string.length()<=5){
+                flag = true;
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "La cadena: "+string+" supera el límite de caracteres aceptados");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Hay por lo menos un campo vacío");
+        }
+        
+        return flag;
+    }
+    
     public static boolean numericPhoneNumber(String str){
         boolean flag = true;
         try{
