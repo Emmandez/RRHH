@@ -231,7 +231,7 @@ public class ConnectionDB {
 
         int succeful = CDU(consulta);
         if(succeful!=0){
-            JOptionPane.showMessageDialog(null, "Candidatp insertado correctamente");
+            JOptionPane.showMessageDialog(null, "Candidato insertado correctamente");
         }
         else{
             JOptionPane.showMessageDialog(null, "Algo mal ocurrió");
@@ -246,7 +246,7 @@ public class ConnectionDB {
         }
     }
     
-    public static void updateApplicant(String name, String lastn, String lastnm, String expLabo, int salario,
+    public static void updateApplicant(String name, String lastn, String lastnm, String expLabo, String salario,
             String puesto, int id_candidato){
         String consulta = "SP_Update_Candidato '"+id_candidato+"', '"+name+"', '"+lastn+"', '"+lastnm+"', '"
                 +expLabo+"', '"+salario+"', '"+puesto+"'";

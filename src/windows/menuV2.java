@@ -49,7 +49,7 @@ public class menuV2 extends javax.swing.JFrame {
         setIconImage(getIconImage());
         setUndecorated(true);
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setText("Bienvenido");
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -58,7 +58,7 @@ public class menuV2 extends javax.swing.JFrame {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addGap(512, 512, 512)
                 .addComponent(jLabel1)
-                .addContainerGap(813, Short.MAX_VALUE))
+                .addContainerGap(792, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

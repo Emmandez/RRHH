@@ -397,7 +397,7 @@ public class Empleados extends javax.swing.JPanel {
                         String nlastn = (String) empleadosTable.getValueAt(row, 2);
                         String nlastnm = (String) empleadosTable.getValueAt(row, 3);
                         String nexLab = (String) empleadosTable.getValueAt(row, 4);
-                        int nexpSal = (int) empleadosTable.getValueAt(row, 5);
+                        String nexpSal = (String) empleadosTable.getValueAt(row, 5);
                         String puestoP = (String) empleadosTable.getValueAt(row, 6);
                         ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
                         CargarTabla("SP_Show_Candidatos");

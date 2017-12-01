@@ -8,6 +8,7 @@ package windows;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -44,13 +45,15 @@ public class Applicants extends javax.swing.JPanel {
         CargarTabla("SP_Show_Candidatos");
         CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
         CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");        
-        CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado "
-                + "FROM direccion JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
-                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia JOIN colonia_ciudad "
-                + "ON colonia.id_colonia = colonia_ciudad.id_colonia JOIN ciudad "
-                + "ON colonia_ciudad.id_ciudad = ciudad.id_ciudad JOIN ciudad_estado "
-                + "ON ciudad.id_ciudad=ciudad_estado.id_ciudad JOIN estado "
-                + "ON ciudad_estado.id_estado=estado.id_estado");
+        CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM candidato "
+                + "JOIN dir_candidato ON dir_candidato.id_candidato = candidato.id_candidato "
+                + "JOIN direccion ON direccion.id_direccion=dir_candidato.id_direccion "
+                + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
         
     }
     
@@ -115,8 +118,8 @@ public class Applicants extends javax.swing.JPanel {
                 Vector v = new Vector();
                 v.add(res.getInt(1));
                 v.add(res.getString(2));
-                v.add(res.getString(4));
                 v.add(res.getString(3));
+                v.add(res.getString(4));
                 v.add(btnUpdate);
                 v.add(btnDelete);
                         
@@ -149,8 +152,8 @@ public class Applicants extends javax.swing.JPanel {
                 Vector v = new Vector();
                 v.add(res.getInt(1));
                 v.add(res.getString(2));
-                v.add(res.getString(3));
                 v.add(res.getString(4));
+                v.add(res.getString(3));
                 v.add(res.getString(5));
                 v.add(res.getString(6));
                 v.add(res.getString(7));
@@ -397,6 +400,9 @@ public class Applicants extends javax.swing.JPanel {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 buscarIdTxtKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                buscarIdTxtKeyTyped(evt);
+            }
         });
         Table.add(buscarIdTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 196, -1));
 
@@ -411,6 +417,12 @@ public class Applicants extends javax.swing.JPanel {
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Buscar Candidato por ID");
         Table.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
+
+        buscarNombreTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                buscarNombreTxtKeyTyped(evt);
+            }
+        });
         Table.add(buscarNombreTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 200, -1));
 
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
@@ -643,6 +655,11 @@ public class Applicants extends javax.swing.JPanel {
             }
         });
         addressTable.setRowHeight(25);
+        addressTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addressTableMouseClicked(evt);
+            }
+        });
         jScrollPane12.setViewportView(addressTable);
         if (addressTable.getColumnModel().getColumnCount() > 0) {
             addressTable.getColumnModel().getColumn(0).setResizable(false);
@@ -683,11 +700,9 @@ public class Applicants extends javax.swing.JPanel {
     private void nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreKeyTyped
         char validate = evt.getKeyChar();
 
-        if(!Character.isLetter(validate)){
+        if(!Character.isLetter(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
             getToolkit().beep();
-
             evt.consume();
-
             JOptionPane.showMessageDialog(null, "Ingresar solo letras");
         }
     }//GEN-LAST:event_nombreKeyTyped
@@ -747,14 +762,22 @@ public class Applicants extends javax.swing.JPanel {
                         String nlastn = (String) applicantsTable.getValueAt(row, 2);
                         String nlastnm = (String) applicantsTable.getValueAt(row, 3);
                         String nexLab = (String) applicantsTable.getValueAt(row, 4);
-                        int nexpSal = (int) applicantsTable.getValueAt(row, 5);
+                        String nexpSal = (String) applicantsTable.getValueAt(row, 5);
                         String puestoP = (String) applicantsTable.getValueAt(row, 6);
-                        ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
-                        CargarTabla("SP_Show_Candidatos"); 
+                        
+                        if(Validations.LettersAndLength(nname) && Validations.LettersAndLength(nlastn) 
+                                && Validations.LettersAndLength(nlastnm) && Validations.validateLettersAndNumbers(nexLab)
+                                && Validations.validateNumbers(nexpSal) && Validations.LettersAndLength(puestoP)){
+                            ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
+                            CargarTabla("SP_Show_Candidatos"); 
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Uno de los datos actualizados no "
+                                    + "corresponde en el formato requerido");
+                        }
+                        
                         break;
                     case "btnHire":
                         {
-                            //query desactivar user
                             int option = JOptionPane.showConfirmDialog(null, "Do you really want to hire this applicant?",
                                     "Warning", JOptionPane.YES_NO_OPTION);
                             if(option == JOptionPane.YES_OPTION){
@@ -766,11 +789,34 @@ public class Applicants extends javax.swing.JPanel {
                                 String[] genArray = {"Femenino","Masculino"};
                                 JComboBox genero_J = new JComboBox(genArray);
                                 
+                                String[] horarios = {
+                                    "7:00 AM - 3:00 PM",
+                                    "8:00 AM - 4:00 PM",
+                                    "9:00 AM - 5:00 PM",
+                                    "10:00 AM - 6:00 PM",
+                                    "11:00 AM - 7:00 PM"
+                                };
+                                JComboBox horario_J = new JComboBox(horarios);
+                                
+                                JTextField sueldo_J = new JTextField(5);
+                                
+                                JTextField puesto_J = new JTextField();
+                                
                                 pane.add(new JLabel("Género"));
                                 pane.add(genero_J);
                                 
                                 pane.add(new JLabel("RFC:"));
                                 pane.add(rfc_J);
+                                
+                                pane.add(new JLabel("Sueldo"));
+                                pane.add(sueldo_J);
+                                
+                                pane.add(new JLabel("Horario"));
+                                pane.add(horario_J);
+                                
+                                pane.add(new JLabel("Puesto"));
+                                pane.add(puesto_J);
+                                
                                 
                                 option = JOptionPane.showConfirmDialog(frame, pane, "Añadir datos faltantes", JOptionPane.OK_OPTION);
                                 if(option==JOptionPane.OK_OPTION){
@@ -779,11 +825,24 @@ public class Applicants extends javax.swing.JPanel {
                                     String name = (String) applicantsTable.getValueAt(row, 1);
                                     String lastn = (String) applicantsTable.getValueAt(row, 2);
                                     String lastnm = (String) applicantsTable.getValueAt(row, 3);
+                                    String puesto = puesto_J.getText();
+                                    String sueldo = sueldo_J.getText();
                                     
-                                    String consulta = "SP_Insert_Empleado '"+name+"', '"+lastn+"', '"+lastnm+"', '"
-                                            +rfc+"', '"+genero+"'";
                                     
-                                    int x = ConnectionDB.CDU(consulta);
+                                    int x=0;
+                                    
+                                    //validar los campos obtenidos de la tabla y del jpane
+                                    if(Validations.LettersAndLength(name) && Validations.LettersAndLength(lastn) 
+                                            && Validations.LettersAndLength(lastnm) && Validations.LettersAndLength(puesto)
+                                            && Validations.validateNumbers(sueldo) && Validations.validateLettersAndNumbers(rfc)){
+                                        String consulta = "SP_Insert_Empleado '"+name+"', '"+lastn+"', '"+lastnm+"', '"
+                                            +rfc+"', '"+sueldo+"','"+puesto+"', '"+genero+"'";
+                                        x = ConnectionDB.CDU(consulta);
+                                    }else{
+                                        JOptionPane.showMessageDialog(null, "Uno o más campos no coinciden con el patrón \n");
+                                    }
+                                    
+                                    
                                     
                                     if(x!=0){
                                         JOptionPane.showMessageDialog(null, "Candidato contratado");
@@ -796,22 +855,35 @@ public class Applicants extends javax.swing.JPanel {
                                             while(telefonos.next()){     
                                                 ConnectionDB.CDU("SP_Insert_Rel_Tel_Emp '"+telefonos.getInt(1)+"'");
                                             }
-                                            ConnectionDB.Query("SP_Delete_Rel_Tel_Can '"+id_User+"'");
+                                            ConnectionDB.CDU("SP_Delete_Rel_Tel_Can '"+id_User+"'");
                                         }
                                         catch(SQLException e){
                                             JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
                                         }
                                         
-                                        ResultSet correos = ConnectionDB.Query(consulta);
+                                        ResultSet correos = ConnectionDB.Query("SP_Get_Email_Candidato '"+id_User+"'");
                                         try{
                                             while(correos.next()){                                                
                                                 ConnectionDB.CDU("SP_Insert_Rel_Email_Emp '"+correos.getInt(1)+"'");
                                             }
-                                            ConnectionDB.Query("SP_Delete_Rel_Email_Can '"+id_User+"'");
+                                            ConnectionDB.CDU("SP_Delete_Rel_Email_Can '"+id_User+"'");
                                         }
                                         catch(SQLException e){
                                             JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
-                                        }                                       
+                                        }
+                                        
+                                        ResultSet direcciones = ConnectionDB.Query("SP_Get_Add_Candidato '"+id_User+"'");
+                                        try{
+                                            while(direcciones.next()){
+                                                ConnectionDB.CDU("SP_Insert_Rel_Dir_Emp '"+direcciones.getInt(1)+"'");
+                                            }
+                                            ConnectionDB.CDU("SP_Delete_Rel_Dir_Can '"+id_User+"'");
+                                        }catch(SQLException e){
+                                            JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
+                                        }
+                                        
+                                        ConnectionDB.CDU("DELETE FROM candidato WHERE id_candidato = "+id_User);
+                                        
                                     }
                                     else{
                                         JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
@@ -871,10 +943,17 @@ public class Applicants extends javax.swing.JPanel {
                                 ConnectionDB.CDU("SP_Insert_Address '"+calle+"', '"+nInt+"', '"+nExt+"', '"+colonia
                                         +"', '"+cp+"', '"+ciudad+"', '"+estado+"'");
                                 ConnectionDB.CDU("SP_Insert_Add_Can '"+id_User+"'");
-                            }
-                            
+                                CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM candidato "
+                                                    + "JOIN dir_candidato ON dir_candidato.id_candidato = candidato.id_candidato "
+                                                    + "JOIN direccion ON direccion.id_direccion=dir_candidato.id_direccion "
+                                                    + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                                    + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                                                    + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                                                    + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                                                    + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                                                    + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+                            }                            
                         }
-
                         break;
                     }
                     case "btnPhone":
@@ -900,13 +979,18 @@ public class Applicants extends javax.swing.JPanel {
                         
                         if(option==JOptionPane.OK_OPTION){
                             String numeroTel = phoneN.getText();
-                            String descTel = desc.getText();
                             String extension = ext.getText();
+                            String descTel = desc.getText();
                             
-                            if(Validations.numericPhoneNumber(numeroTel)){
+                            if(Validations.numericPhoneNumber(numeroTel) 
+                                    && Validations.numericPhoneNumber(extension) && Validations.validateJustLetters(descTel)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);   
                                 ConnectionDB.phoneCandidato(id_User);
                                 CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
+                            }else{
+                                JOptionPane.showMessageDialog(null, "Los campos número de teléfono y extensión solo admiten números \n"
+                                        + "El campo descripción sólo admite letras\n"
+                                        + "Intente de nuevo");
                             }
                         }
                         break;
@@ -932,7 +1016,7 @@ public class Applicants extends javax.swing.JPanel {
                             String mEmail = email.getText();
                             String mDesc = desc.getText();
                             
-                            if(Validations.validateEmail(mEmail)){
+                            if(Validations.validateEmail(mEmail) && Validations.length50Empty(mDesc)){
                                 ConnectionDB.insertEmail(mEmail, mDesc);   
                                 ConnectionDB.emailCandidato(id_User);
                                 CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");                                
@@ -973,51 +1057,93 @@ public class Applicants extends javax.swing.JPanel {
         CargarTabla("SELECT * FROM candidato WHERE id_candidato = "+id_user);
         CargarEmailTable("SP_Get_Email_Candidato '"+id_user+"'");
         CargarTelTable("SP_Get_Tel_Candidato '"+id_user+"'"); 
-        buscarID.setText("");
+        buscarIdTxt.setText("");
     }//GEN-LAST:event_buscarIDMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
        char validate = evt.getKeyChar();
 
-    //        if(!Character.isDigit(validate)){
-    //            getToolkit().beep();
-    //            evt.consume();
-    //            JOptionPane.showMessageDialog(null, "Ingresar solo números");
-    //        }
+            if(!Character.isDigit(validate) ){
+                getToolkit().beep();
+                evt.consume();
+                JOptionPane.showMessageDialog(null, "Ingresar solo números");
+            }
     }//GEN-LAST:event_buscarIdTxtKeyPressed
 
     private void showAllUsersBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showAllUsersBtnMouseClicked
         CargarTabla("SP_Show_Candidatos");
+        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
+        CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");        
+        CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM candidato "
+                + "JOIN dir_candidato ON dir_candidato.id_candidato = candidato.id_candidato "
+                + "JOIN direccion ON direccion.id_direccion=dir_candidato.id_direccion "
+                + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+        
     }//GEN-LAST:event_showAllUsersBtnMouseClicked
 
     private void buscarNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarNombreMouseClicked
-//        String username = buscarNombreTxt.getText();
-//        
-//        //String consulta = "SP_Search_User_Like '"+username+"'";
-//        
-//        buscarIdTxt.setText("");
-//        buscarNombreTxt.setText("");
-//        CargarTabla(consulta);
+        String Nnombre = buscarNombreTxt.getText();
+        
+        String consulta = "SP_Search_Candidato_Like '"+Nnombre+"'";
+        
+        buscarIdTxt.setText("");
+        buscarNombreTxt.setText("");
+        CargarTabla(consulta);
     }//GEN-LAST:event_buscarNombreMouseClicked
 
     private void appKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_appKeyTyped
-        // TODO add your handling code here:
+        char validate = evt.getKeyChar();
+
+        if(!Character.isLetter(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo letras");
+        }
     }//GEN-LAST:event_appKeyTyped
 
     private void apmKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_apmKeyTyped
-        // TODO add your handling code here:
+        char validate = evt.getKeyChar();
+
+        if(!Character.isLetter(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo letras");
+        }
     }//GEN-LAST:event_apmKeyTyped
 
     private void expLabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expLabKeyTyped
-        // TODO add your handling code here:
+        char validate = evt.getKeyChar();
+
+        if(!Character.isLetter(validate) && !Character.isDigit(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo letras y números");
+        }
     }//GEN-LAST:event_expLabKeyTyped
 
     private void expSalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_expSalKeyTyped
-        // TODO add your handling code here:
+        char validate = evt.getKeyChar();
+
+        if(!Character.isDigit(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo números");
+        }
     }//GEN-LAST:event_expSalKeyTyped
 
     private void puestoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_puestoKeyTyped
-        // TODO add your handling code here:
+        char validate = evt.getKeyChar();
+
+        if(!Character.isLetter(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo letras");
+        }
     }//GEN-LAST:event_puestoKeyTyped
 
     private void registerButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_registerButtonKeyPressed
@@ -1072,9 +1198,12 @@ public class Applicants extends javax.swing.JPanel {
                         String number = (String) phonesTable.getValueAt(row, 1);
                         String ext    = (String) phonesTable.getValueAt(row, 2);
                         String desc   = (String) phonesTable.getValueAt(row, 3);
-                        ConnectionDB.updatePhone(id_User, number, ext, desc);
-                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
+                        if(Validations.validateNumbers(number) && Validations.validateNumbers(ext) && Validations.LettersAndLength(desc)){
+                            ConnectionDB.updatePhone(id_User, number, ext, desc);
+                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
                                 + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        }
+                        
                         break;
                     case "btnDelete":
                         int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this phone?",
@@ -1106,9 +1235,11 @@ public class Applicants extends javax.swing.JPanel {
                     case "btnUpdate":
                         String email = (String) emailTable.getValueAt(row, 1);
                         String desc    = (String) emailTable.getValueAt(row, 2);
-                        ConnectionDB.updateEmail(id_User, email, desc);
-                        CargarTelTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                        if(Validations.validateEmail(email)&& Validations.LettersAndLength(desc)){
+                            ConnectionDB.updateEmail(id_User, email, desc);
+                            CargarTelTable("SELECT correo.id_correo, email, desc_correo FROM correo "
                                 + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
+                        }
                         break;
                     case "btnDelete":
                         int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this email?",
@@ -1123,6 +1254,84 @@ public class Applicants extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_emailTableMouseClicked
+
+    private void addressTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addressTableMouseClicked
+        int column = addressTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/addressTable.getRowHeight();
+        
+        if(row < addressTable.getRowCount() && row >= 0 && column<addressTable.getColumnCount() && column>=0){
+            Object  value = addressTable.getValueAt(row, column);
+            Object id = addressTable.getValueAt(row, 0);
+            int id_User = (int) id;
+            if(value instanceof JButton){
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+                switch (boton.getName()) {
+                    case "btnUpdate":
+                        String calle   = (String) addressTable.getValueAt(row, 1);
+                        String numExt  = (String) addressTable.getValueAt(row, 2);
+                        String numInt  = (String) addressTable.getValueAt(row, 3);
+                        String colonia = (String) addressTable.getValueAt(row, 4);
+                        String cp      = (String) addressTable.getValueAt(row, 5);
+                        String ciudad  = (String) addressTable.getValueAt(row, 6);
+                        String estado  = (String) addressTable.getValueAt(row, 7);
+                        
+                        if(Validations.length50Empty(calle) && Validations.validateLettersAndNumbers(numExt)
+                                && Validations.validateLettersAndNumbers(numExt) && Validations.validateLettersAndNumbers(colonia)
+                                && Validations.validateNumbers(cp) && Validations.LettersAndLength(ciudad)
+                                && Validations.validateJustLetters(estado)){
+                            ConnectionDB.CDU("SP_Update_Address '"+id_User+"', '"+calle+"', '"+numInt+"', '"+numExt+"', '"
+                            +colonia+"', '"+cp+"', '"+ciudad+"', '"+estado+"'");
+                            CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado "
+                                            + "FROM direccion JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                            + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia JOIN colonia_ciudad "
+                                            + "ON colonia.id_colonia = colonia_ciudad.id_colonia JOIN ciudad "
+                                            + "ON colonia_ciudad.id_ciudad = ciudad.id_ciudad JOIN ciudad_estado "
+                                            + "ON ciudad.id_ciudad=ciudad_estado.id_ciudad JOIN estado "
+                                            + "ON ciudad_estado.id_estado=estado.id_estado");
+                        }
+                        
+                        break;
+                    case "btnDelete":
+                        int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this Address?",
+                                    "Warning", JOptionPane.YES_NO_OPTION);
+                        if(option == JOptionPane.YES_OPTION){
+                            ConnectionDB.CDU("DELETE FROM direccion WHERE id_direccion ="+id_User);
+                            CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado "
+                                            + "FROM direccion JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                            + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia JOIN colonia_ciudad "
+                                            + "ON colonia.id_colonia = colonia_ciudad.id_colonia JOIN ciudad "
+                                            + "ON colonia_ciudad.id_ciudad = ciudad.id_ciudad JOIN ciudad_estado "
+                                            + "ON ciudad.id_ciudad=ciudad_estado.id_ciudad JOIN estado "
+                                            + "ON ciudad_estado.id_estado=estado.id_estado");
+                        }       
+                        break;                   
+                }
+            }
+        }
+        
+        
+    }//GEN-LAST:event_addressTableMouseClicked
+
+    private void buscarIdTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyTyped
+        char validate = evt.getKeyChar();
+
+        if(!Character.isDigit(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo números");
+        }
+    }//GEN-LAST:event_buscarIdTxtKeyTyped
+
+    private void buscarNombreTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarNombreTxtKeyTyped
+        char validate = evt.getKeyChar();
+
+        if(!Character.isLetter(validate) && !Character.isSpaceChar(validate) && !Character.isISOControl(validate)){
+            getToolkit().beep();
+            evt.consume();
+            JOptionPane.showMessageDialog(null, "Ingresar solo letras");
+        }
+    }//GEN-LAST:event_buscarNombreTxtKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
