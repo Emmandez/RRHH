@@ -162,14 +162,11 @@ public class Applicants extends javax.swing.JPanel {
                 v.add(btnDelete);
                 
                 modelo.addRow(v);
-                addressTable.setModel(modelo);
-                
+                addressTable.setModel(modelo);       
             }
         }
         catch(SQLException e){
         }
-        
-        
     }
     public void CargarTabla(String query){
         applicantsTable.setDefaultRenderer(Object.class, new Render());
@@ -735,13 +732,7 @@ public class Applicants extends javax.swing.JPanel {
             CargarEmailTable("SP_Get_Email_Candidato '"+id_User+"'");
             CargarTelTable("SP_Get_Tel_Candidato '"+id_User+"'"); 
             CargarAddressTable("SP_Get_Add_Candidato '"+id_User+"'");
-            
-            String oldName = (String) applicantsTable.getValueAt(row, 1);
-            String oldLastName = (String) applicantsTable.getValueAt(row, 2);
-            String oldLastNameM = (String) applicantsTable.getValueAt(row, 3);
-            String oldExpLab = (String) applicantsTable.getValueAt(row, 4);
-            int oldNExpSal = (int) applicantsTable.getValueAt(row, 5);
-            String OldpuestoP = (String) applicantsTable.getValueAt(row, 6);
+           
             if(value instanceof JButton){
                 ((JButton) value).doClick();
                 JButton boton = (JButton) value;
@@ -881,9 +872,8 @@ public class Applicants extends javax.swing.JPanel {
                                         }catch(SQLException e){
                                             JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
                                         }
-                                        
                                         ConnectionDB.CDU("DELETE FROM candidato WHERE id_candidato = "+id_User);
-                                        
+                                        CargarTabla("SP_Show_Candidatos");
                                     }
                                     else{
                                         JOptionPane.showMessageDialog(null, "Algo mal ha ocurrido. Conatacte al administrador");
