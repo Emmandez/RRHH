@@ -80,7 +80,7 @@ public class Validations {
     */
     public static boolean LettersAndLength(String str){
         boolean flag = false;
-        if(str.matches(".*[a_zA_ZáéíóúÁÉÍÓÚ]*.") && str.length()<20)
+        if(str.matches(".*[a_zA_ZáéíóúÁÉÍÓÚ]*.") && str.length()<50 && str.length()>0)
             flag = true;
         return flag;
     }
@@ -154,7 +154,7 @@ public class Validations {
     */
     public static boolean validateNumbers(String str){
         boolean flag=false;
-        if(str.matches(".*[0_9]*."))
+        if(str.matches("[0-9]*"))
             flag=true;
         
         return flag;

@@ -759,7 +759,8 @@ public class Applicants extends javax.swing.JPanel {
                         if(Validations.LettersAndLength(nname) && Validations.LettersAndLength(nlastn) 
                                 && Validations.LettersAndLength(nlastnm) && Validations.validateLettersAndNumbers(nexLab)
                                 && Validations.validateNumbers(nexpSal) && Validations.LettersAndLength(puestoP)){
-                            ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
+                            int sal = Integer.parseInt(nexpSal);
+                            ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, sal, puestoP, id_User);
                             CargarTabla("SP_Show_Candidatos"); 
                         }else{
                             JOptionPane.showMessageDialog(null, "Uno de los datos actualizados no "
@@ -1044,10 +1045,20 @@ public class Applicants extends javax.swing.JPanel {
 
     private void buscarIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarIDMouseClicked
         int id_user = Integer.parseInt(buscarIdTxt.getText());
-        CargarTabla("SELECT * FROM candidato WHERE id_candidato = "+id_user);
-        CargarEmailTable("SP_Get_Email_Candidato '"+id_user+"'");
-        CargarTelTable("SP_Get_Tel_Candidato '"+id_user+"'"); 
-        buscarIdTxt.setText("");
+        String consulta = "SELECT * FROM candidato WHERE id_candidato = "+id_user;
+        ResultSet res = ConnectionDB.Query(consulta);
+        
+        try{
+            if(res.next()){
+                CargarTabla(consulta);
+                CargarEmailTable("SP_Get_Email_Candidato '"+id_user+"'");
+                CargarTelTable("SP_Get_Tel_Candidato '"+id_user+"'"); 
+                buscarIdTxt.setText("");
+            }
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_buscarIDMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
@@ -1077,13 +1088,24 @@ public class Applicants extends javax.swing.JPanel {
     }//GEN-LAST:event_showAllUsersBtnMouseClicked
 
     private void buscarNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarNombreMouseClicked
-        String Nnombre = buscarNombreTxt.getText();
-        
+        String Nnombre = buscarNombreTxt.getText();        
         String consulta = "SP_Search_Candidato_Like '"+Nnombre+"'";
         
-        buscarIdTxt.setText("");
-        buscarNombreTxt.setText("");
-        CargarTabla(consulta);
+        ResultSet res = ConnectionDB.Query(consulta);
+        try{
+            if(res.next()){
+                buscarIdTxt.setText("");
+                buscarNombreTxt.setText("");
+                CargarTabla(consulta);
+                /*
+                CargarEmailTable("SP_Get_Email_Candidato '"+res.getInt(1)+"'");
+                CargarTelTable("SP_Get_Tel_Candidato '"+res.getInt(1)+"'"); 
+                    */
+            }
+        }catch(SQLException e){
+        }
+        
+        
     }//GEN-LAST:event_buscarNombreMouseClicked
 
     private void appKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_appKeyTyped
@@ -1153,15 +1175,21 @@ public class Applicants extends javax.swing.JPanel {
         
         if(Validations.length50Empty(name) && Validations.length50Empty(lastn) &&
                 Validations.length50Empty(lastnm) && Validations.length50Empty(expLabo)
-                && Validations.length50Empty(salario) && Validations.length50Empty(puestoP)){
-            conexion.createApplicant(name, lastn, lastnm, expLabo, salario, puestoP);
-            CargarTabla("SP_Show_Candidatos");
-            nombre.setText("");
-            app.setText("");
-            apm.setText("");
-            expLab.setText("");
-            expSal.setText("");
-            puesto.setText("");
+                 && Validations.length50Empty(puestoP)){
+            if(Validations.validateNumbers(salario)){
+                conexion.createApplicant(name, lastn, lastnm, expLabo, salario, puestoP);
+                CargarTabla("SP_Show_Candidatos");
+                nombre.setText("");
+                app.setText("");
+                apm.setText("");
+                expLab.setText("");
+                expSal.setText("");
+                puesto.setText("");
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Solo se admiten número en la casilla Expectativa Salarial",
+                        "Error!", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
         
@@ -1190,6 +1218,11 @@ public class Applicants extends javax.swing.JPanel {
                         String desc   = (String) phonesTable.getValueAt(row, 3);
                         if(Validations.validateNumbers(number) && Validations.validateNumbers(ext) && Validations.LettersAndLength(desc)){
                             ConnectionDB.updatePhone(id_User, number, ext, desc);
+                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
+                                + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Uno o más datos no cuentan con el formato correcto",
+                                    "Error!", JOptionPane.ERROR_MESSAGE);
                             CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
                                 + "ON telefono.id_telefono= tel_candidato.id_telefono");
                         }
@@ -1227,7 +1260,12 @@ public class Applicants extends javax.swing.JPanel {
                         String desc    = (String) emailTable.getValueAt(row, 2);
                         if(Validations.validateEmail(email)&& Validations.LettersAndLength(desc)){
                             ConnectionDB.updateEmail(id_User, email, desc);
-                            CargarTelTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                            CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                                + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
+                        }else{
+                            JOptionPane.showMessageDialog(null, "El email no tiene el formato correcto"
+                            , "Error!", JOptionPane.ERROR_MESSAGE);
+                            CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
                                 + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
                         }
                         break;
@@ -1235,9 +1273,9 @@ public class Applicants extends javax.swing.JPanel {
                         int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this email?",
                                     "Warning", JOptionPane.YES_NO_OPTION);
                         if(option == JOptionPane.YES_OPTION){
-                            ConnectionDB.CDU("DELETE FROM telefono where id_telefono ="+id_User);
-                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
-                                + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                            ConnectionDB.CDU("DELETE FROM correo where id_correo ="+id_User);
+                            CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                                + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
                         }       
                         break;                   
                 }
@@ -1272,14 +1310,26 @@ public class Applicants extends javax.swing.JPanel {
                                 && Validations.validateJustLetters(estado)){
                             ConnectionDB.CDU("SP_Update_Address '"+id_User+"', '"+calle+"', '"+numInt+"', '"+numExt+"', '"
                             +colonia+"', '"+cp+"', '"+ciudad+"', '"+estado+"'");
-                            CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado "
-                                            + "FROM direccion JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
-                                            + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia JOIN colonia_ciudad "
-                                            + "ON colonia.id_colonia = colonia_ciudad.id_colonia JOIN ciudad "
-                                            + "ON colonia_ciudad.id_ciudad = ciudad.id_ciudad JOIN ciudad_estado "
-                                            + "ON ciudad.id_ciudad=ciudad_estado.id_ciudad JOIN estado "
-                                            + "ON ciudad_estado.id_estado=estado.id_estado");
+                            CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM candidato "
+                                                + "JOIN dir_candidato ON dir_candidato.id_candidato = candidato.id_candidato "
+                                                + "JOIN direccion ON direccion.id_direccion=dir_candidato.id_direccion "
+                                                + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                                                + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                                                + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                                                + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                                                + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+                            
+                            JOptionPane.showMessageDialog(null, "Dirección Actualizada");
                         }
+                        else{
+                            CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                                + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
+                            JOptionPane.showMessageDialog(null, "Uno o más datos no cuentan con el formato correcto."
+                            , "Error!", JOptionPane.ERROR_MESSAGE);
+                        }
+                        
+                        
                         
                         break;
                     case "btnDelete":

@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.bind.ParseConversionEvent;
 import rrhh.ConnectionDB;
 import rrhh.Render;
 import rrhh.Validations;
@@ -31,12 +34,9 @@ import static windows.menu.mainPanel;
 public class Empleados extends javax.swing.JPanel {
 
     /**
-     * Stored Procedures candidatos
      * 
-     * SP_Show_Candidatos
-     * SP_Insert_Candidato
-     * SP_Delete_Candidato
-     * SP_Update_Candidato
+     * 
+     * 
      */
     public Empleados() {
         initComponents();
@@ -52,6 +52,72 @@ public class Empleados extends javax.swing.JPanel {
                 + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
                 + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
                 + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+        CargarFaltasTable("SELECT * FROM faltas");
+        CargarAsisTable("SELECT * FROM asistencia");
+        
+    }
+    
+    public void CargarAsisTable(String query){
+        AsistenciasTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) AsistenciasTable.getModel();
+        
+        AsistenciasTable.setRowHeight(25);
+        
+        modelo.setRowCount(0);
+        ConnectionDB.getConnection();
+        ResultSet res = ConnectionDB.Query(query);
+        
+        try{
+            while(res.next()){
+                JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(Color.red);
+                btnDelete.setName("btnDelete");
+                
+                Vector v = new Vector();
+                
+                v.add(res.getInt(1));
+                v.add(res.getDate(3));
+                v.add(res.getInt(2));
+                v.add(btnDelete);
+                
+                modelo.addRow(v);
+                AsistenciasTable.setModel(modelo);
+            }
+        }catch(SQLException e){
+            
+        }
+    }
+    
+    public void CargarFaltasTable(String query){
+        FaltasTable.setDefaultRenderer(Object.class, new Render());
+        DefaultTableModel modelo = (DefaultTableModel) FaltasTable.getModel();
+        FaltasTable.setRowHeight(25);
+        
+        modelo.setRowCount(0);
+        ConnectionDB.getConnection();
+        ResultSet res = ConnectionDB.Query(query);
+        
+        try{
+            while(res.next()){
+                JButton btnDelete = new JButton("Delete");
+                btnDelete.setBackground(Color.red);
+                btnDelete.setName("btnDelete");
+
+                Vector v = new Vector();
+                
+                v.add(res.getInt(3));
+                v.add(res.getInt(1));
+                v.add(res.getDate(2));
+                
+                
+                v.add(btnDelete);
+                
+                
+                modelo.addRow(v);
+                FaltasTable.setModel(modelo);
+            }
+        }catch(SQLException e){
+        }
         
     }
     
@@ -84,6 +150,7 @@ public class Empleados extends javax.swing.JPanel {
                 v.add(res.getString(3));
                 v.add(btnUpdate);
                 v.add(btnDelete);
+                
                 modelo.addRow(v);
 
                 emailTable.setModel(modelo);            
@@ -256,7 +323,6 @@ public class Empleados extends javax.swing.JPanel {
         phonesTable = new javax.swing.JTable();
         jScrollPane11 = new javax.swing.JScrollPane();
         emailTable = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
         jScrollPane12 = new javax.swing.JScrollPane();
         addressTable = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
@@ -267,9 +333,12 @@ public class Empleados extends javax.swing.JPanel {
         AsistenciasTable = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        AddFalta = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        cantidadAsistencias = new javax.swing.JTextPane();
+        jLabel3 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        FaltasTotals = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -328,6 +397,7 @@ public class Empleados extends javax.swing.JPanel {
             empleadosTable.getColumnModel().getColumn(2).setResizable(false);
             empleadosTable.getColumnModel().getColumn(3).setResizable(false);
             empleadosTable.getColumnModel().getColumn(4).setResizable(false);
+            empleadosTable.getColumnModel().getColumn(4).setPreferredWidth(10);
             empleadosTable.getColumnModel().getColumn(5).setResizable(false);
             empleadosTable.getColumnModel().getColumn(5).setPreferredWidth(10);
             empleadosTable.getColumnModel().getColumn(6).setResizable(false);
@@ -387,12 +457,17 @@ public class Empleados extends javax.swing.JPanel {
                 buscarNombreMouseClicked(evt);
             }
         });
+        buscarNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarNombreActionPerformed(evt);
+            }
+        });
         Table.add(buscarNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Empleados Activos");
-        Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 50, -1, 30));
+        Table.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, -1, 30));
 
         showAllUsersBtn.setText("Mostrar Todos");
         showAllUsersBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -405,7 +480,7 @@ public class Empleados extends javax.swing.JPanel {
                 showAllUsersBtnActionPerformed(evt);
             }
         });
-        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 60, 120, -1));
+        Table.add(showAllUsersBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 20, 120, -1));
 
         AddEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add_user.png"))); // NOI18N
         AddEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -433,7 +508,7 @@ public class Empleados extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, true, true, false, false
@@ -456,7 +531,7 @@ public class Empleados extends javax.swing.JPanel {
         jScrollPane10.setViewportView(phonesTable);
         if (phonesTable.getColumnModel().getColumnCount() > 0) {
             phonesTable.getColumnModel().getColumn(0).setResizable(false);
-            phonesTable.getColumnModel().getColumn(0).setPreferredWidth(8);
+            phonesTable.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
 
         Table.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 410, 150));
@@ -499,12 +574,7 @@ public class Empleados extends javax.swing.JPanel {
             emailTable.getColumnModel().getColumn(0).setPreferredWidth(7);
         }
 
-        Table.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 400, 150));
-
-        jLabel3.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Checador");
-        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 450, -1, 30));
+        Table.add(jScrollPane11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, 400, 150));
 
         addressTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -547,30 +617,30 @@ public class Empleados extends javax.swing.JPanel {
             addressTable.getColumnModel().getColumn(0).setPreferredWidth(6);
         }
 
-        Table.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 1080, 150));
+        Table.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 600, 1080, 150));
 
         jLabel6.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Dirección");
-        Table.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 410, 100, -1));
+        Table.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 570, 100, -1));
 
         FaltasTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Fecha", "Empleado", "Delete"
+                "Folio", "Empleado", "Fecha", "Delete"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -592,32 +662,33 @@ public class Empleados extends javax.swing.JPanel {
             FaltasTable.getColumnModel().getColumn(0).setResizable(false);
             FaltasTable.getColumnModel().getColumn(1).setResizable(false);
             FaltasTable.getColumnModel().getColumn(2).setResizable(false);
+            FaltasTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        Table.add(jScrollPane13, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 240, 230, 150));
+        Table.add(jScrollPane13, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 310, 150));
 
         jLabel4.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Email");
-        Table.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 210, -1, 30));
+        Table.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 400, -1, 30));
 
         AsistenciasTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Fecha", "Empleado", "Delete"
+                "Folio", "Fecha", "Empleado", "Delete"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -639,55 +710,110 @@ public class Empleados extends javax.swing.JPanel {
             AsistenciasTable.getColumnModel().getColumn(0).setResizable(false);
             AsistenciasTable.getColumnModel().getColumn(1).setResizable(false);
             AsistenciasTable.getColumnModel().getColumn(2).setResizable(false);
+            AsistenciasTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        Table.add(jScrollPane14, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 240, 230, 150));
+        Table.add(jScrollPane14, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 240, 310, 150));
 
         jLabel5.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Faltas");
-        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 210, -1, 30));
+        Table.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 210, -1, 30));
 
         jLabel7.setFont(new java.awt.Font("Roboto Light", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Asistencias");
-        Table.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 210, -1, 30));
+        Table.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 210, -1, 30));
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+        AddFalta.setText("Agregar Falta");
+        AddFalta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AddFaltaMouseClicked(evt);
             }
         });
-        Table.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 510, 140, -1));
+        Table.add(AddFalta, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 390, 140, -1));
 
-        jButton1.setText("Checar entrada");
-        Table.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 540, 140, -1));
+        jScrollPane1.setViewportView(cantidadAsistencias);
+        cantidadAsistencias.setEnabled(false);
 
-        jLabel10.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel10.setText("Código de empleado");
-        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 490, -1, -1));
+        Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 250, 160, -1));
+
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Asistencias Totales");
+        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 230, -1, -1));
+
+        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel10.setText("Faltas Totales");
+        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 320, -1, -1));
+        Table.add(FaltasTotals, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 340, 150, -1));
+        FaltasTotals.setEnabled(false);
 
         add(Table, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1366, 768));
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void showAllUsersBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showAllUsersBtnMouseClicked
         CargarTabla("SELECT * FROM empleado WHERE active_em = 1");
+        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_empleado ON telefono.id_telefono= tel_empleado.id_telefono");
+        CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_empleado ON correo.id_correo= correo_empleado.id_correo");        
+        CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM empleado "
+                + "JOIN dir_empleado ON dir_empleado.id_empleado = empleado.id_empleado "
+                + "JOIN direccion ON direccion.id_direccion=dir_empleado    .id_direccion "
+                + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+        
+        CargarAsisTable("SELECT * FROM asistencia");
+        CargarFaltasTable("SELECT * FROM faltas");
+        
+        
+        cantidadAsistencias.setText("");
+        FaltasTotals.setText("");
+        
     }//GEN-LAST:event_showAllUsersBtnMouseClicked
 
     private void buscarNombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarNombreMouseClicked
         String username = buscarNombreTxt.getText();
         String consulta = "SP_Search_Empleado_Like '"+username+"'";
-
+        
+        ResultSet res = ConnectionDB.Query(consulta);
+        try{
+            if(res.next()){
+                CargarTabla(consulta);
+            }
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, "No hay nadie con ese nombre", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+        
         buscarIdTxt.setText("");
-        buscarNombreTxt.setText("");    
-        CargarTabla(consulta);
+        buscarNombreTxt.setText("");
+        
+        
     }//GEN-LAST:event_buscarNombreMouseClicked
 
     private void buscarIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buscarIDMouseClicked
 
         int id_user = Integer.parseInt(buscarIdTxt.getText());
         String consulta = "SELECT * FROM empleado WHERE id_empleado = "+id_user;
-        CargarTabla(consulta);
+        
+        ResultSet res = ConnectionDB.Query(consulta);
+        try{
+            if(res.next()){
+                CargarTabla(consulta);
+                CargarEmailTable("SP_Get_Email_Empleado '"+id_user+"'");
+                CargarTelTable("SP_Get_Tel_Empleado '"+id_user+"'"); 
+                CargarAddressTable("SP_Get_Add_Empleado '"+id_user+"'");
+                buscarIdTxt.setText("");
+                buscarNombreTxt.setText("");
+            }
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, "No hay nadie con ese ID", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
     }//GEN-LAST:event_buscarIDMouseClicked
 
     private void buscarIdTxtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscarIdTxtKeyPressed
@@ -705,23 +831,30 @@ public class Empleados extends javax.swing.JPanel {
     }//GEN-LAST:event_buscarIdTxtActionPerformed
 
     private void empleadosTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_empleadosTableMouseClicked
-
         int column = empleadosTable.getColumnModel().getColumnIndexAtX(evt.getX());
         int row = evt.getY()/empleadosTable.getRowHeight();
 
         if(row < empleadosTable.getRowCount() && row >= 0 && column<empleadosTable.getColumnCount() && column>=0){
-            Object  value = empleadosTable.getValueAt(row, column);
-            Object id = empleadosTable.getValueAt(row, 0);
-            int id_User = (int) id;
+            
+            Object  value = empleadosTable.getValueAt(row, column);//Casilla click
+            Object id = empleadosTable.getValueAt(row, 0);//ID
+            int id_User = (int) id; //convirtiendo objeto a int
             
             CargarEmailTable("SP_Get_Email_Empleado '"+id_User+"'");
             CargarTelTable("SP_Get_Tel_Empleado '"+id_User+"'"); 
             CargarAddressTable("SP_Get_Add_Empleado '"+id_User+"'");
+            CargarFaltasTable("SELECT * FROM faltas WHERE id_empleado = "+id_User);
+            CargarAsisTable("SELECT * FROM asistencia WHERE id_empleado ="+id_User);
             
             
             if(value instanceof JButton){
                 ((JButton) value).doClick();
-                JButton boton = (JButton) value;
+                JButton boton = (JButton) value;//Crear botón y pasar el valor 
+                
+                if(boton.getName().equals("btnEquipo")){
+
+                }
+                
                 switch (boton.getName()) {
                     case "btnDelete":
                     {
@@ -730,7 +863,7 @@ public class Empleados extends javax.swing.JPanel {
                             "Warning", JOptionPane.YES_NO_OPTION);
                         if(option == JOptionPane.YES_OPTION){
                             ConnectionDB.deleteApplicantId(id_User);
-                            CargarTabla("SP_Show_Candidatos");
+                            CargarTabla("SELECT * FROM empleado WHERE active_em=1");
                         }
                         break;
                     }
@@ -738,30 +871,39 @@ public class Empleados extends javax.swing.JPanel {
                     String nname = (String) empleadosTable.getValueAt(row, 1);
                     String nlastn = (String) empleadosTable.getValueAt(row, 2);
                     String nlastnm = (String) empleadosTable.getValueAt(row, 3);
-                    String nexLab = (String) empleadosTable.getValueAt(row, 4);
-                    String nexpSal = (String) empleadosTable.getValueAt(row, 5);
+                    String rfc = (String) empleadosTable.getValueAt(row, 4);
+                    String nsueldo = (String) empleadosTable.getValueAt(row, 5);
                     String puestoP = (String) empleadosTable.getValueAt(row, 6);
-                    ConnectionDB.updateApplicant(nname, nlastn, nlastnm, nexLab, nexpSal, puestoP, id_User);
-                    CargarTabla("SP_Show_Candidatos");
-                    break;
-                    case "btnHire":
-                    {
-                        //query desactivar user
-                        int option = JOptionPane.showConfirmDialog(null, "Do you really want to hire this applicant?",
-                            "Warning", JOptionPane.YES_NO_OPTION);
-                        if(option == JOptionPane.YES_OPTION){
-                            ConnectionDB.changeStatus(id_User);
-                            CargarTabla("SP_Show_Candidatos");
-
-                        }       break;
+                    //Campo para horario
+                    String genero = (String) empleadosTable.getValueAt(row, 7);
+                    
+                    if(Validations.LettersAndLength(nname) && Validations.LettersAndLength(nlastn) 
+                            && Validations.LettersAndLength(nlastnm) && Validations.validateLettersAndNumbers(rfc)
+                            && Validations.validateNumbers(nsueldo) && Validations.LettersAndLength(puestoP) 
+                            ){
+                        if((genero.equals("Masculino") || genero.equals("Femenino"))){
+                            int sal = Integer.parseInt(nsueldo);
+                            String consulta = "SP_Update_Empleado '"+id_User+"', '"+nname+"', '"+nlastn
+                                    +"', '"+nlastnm+"', '"+rfc+"', '"+sal+"', '"+puestoP+"', '"+genero+"'";
+                            ConnectionDB.CDU(consulta);
+                            CargarTabla("SELECT * FROM empleado WHERE active_em=1");
+                            JOptionPane.showMessageDialog(null, "Empleado Actualizado", "Éxito!" , JOptionPane.OK_OPTION);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "El género debe de ser Femenino o Masculino"
+                                    + "","Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-
+                    
+                    
+                    break;
                     case "btnPhone":
                     {
                         JFrame frame = new JFrame("Agregar Telefono");
                         JPanel pane = new JPanel();
                         pane.setLayout(new GridLayout(0, 2, 2, 2));
 
+                        
                         JTextField phoneN = new JTextField(10);
                         JTextField desc = new JTextField();
                         JTextField ext = new JTextField();
@@ -778,12 +920,20 @@ public class Empleados extends javax.swing.JPanel {
                         int option = JOptionPane.showConfirmDialog(frame, pane, "Añadir teléfono", JOptionPane.OK_OPTION);
 
                         if(option==JOptionPane.OK_OPTION){
+                            
+                            //obtener datos de los campos
+                            //String nombreVariable = nombreCampo.getText();
                             String numeroTel = phoneN.getText();
                             String descTel = desc.getText();
                             String extension = ext.getText();
+                            
+                            String x = String.valueOf(genero_J.getSelectedItem());
+                            
+                            //conexion.metodoEquipo();
 
                             if(Validations.numericPhoneNumber(numeroTel)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);
+                                //conexión.consulta()
                                 ConnectionDB.phoneCandidato(id_User);
                             }
                         }
@@ -852,7 +1002,7 @@ public class Empleados extends javax.swing.JPanel {
         JTextField sueldo_J = new JTextField();
         JTextField puesto_J = new JTextField();
         
-        String[] genArray = {"Género","Femenino","Masculino"};
+        String[] genArray = {"Género","Femenino","Masculino"};//Opciones
         JComboBox genero_J = new JComboBox(genArray);
         
         pane.add(new JLabel("Nombre: "));
@@ -884,6 +1034,8 @@ public class Empleados extends javax.swing.JPanel {
             String rfc = rfc_j.getText();
             String sueldo = sueldo_J.getText();
             String puesto = puesto_J.getText();
+            
+            //String variable = String.valueOf(X.getSelectedItem());
             String genero = String.valueOf(genero_J.getSelectedItem());
             
             if(Validations.LettersAndLength(nombre) && Validations.LettersAndLength(app)
@@ -916,6 +1068,12 @@ public class Empleados extends javax.swing.JPanel {
             if(value instanceof JButton){
                 ((JButton) value).doClick();
                 JButton boton = (JButton) value;
+                
+                JTextField x = new JTextField(); //campo de texto
+                
+                String[] status = {"bueno", "regular", "malo"};
+                JComboBox status_J = new JComboBox(genArray);
+                
                 switch (boton.getName()) {
                     case "btnUpdate":
                     String number = (String) phonesTable.getValueAt(row, 1);
@@ -923,8 +1081,9 @@ public class Empleados extends javax.swing.JPanel {
                     String desc   = (String) phonesTable.getValueAt(row, 3);
                     if(Validations.validateNumbers(number) && Validations.validateNumbers(ext) && Validations.LettersAndLength(desc)){
                         ConnectionDB.updatePhone(id_User, number, ext, desc);
-                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
-                            + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_empleado "
+                            + "ON telefono.id_telefono= tel_empleado.id_telefono");
+                        
                     }
 
                     break;
@@ -933,8 +1092,8 @@ public class Empleados extends javax.swing.JPanel {
                         "Warning", JOptionPane.YES_NO_OPTION);
                     if(option == JOptionPane.YES_OPTION){
                         ConnectionDB.CDU("SP_Delete_Tel_Candidato '"+id_User+"'");
-                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
-                            + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_empleado "
+                            + "ON telefono.id_telefono= tel_empleado.id_telefono");
                     }
                     break;
 
@@ -960,8 +1119,8 @@ public class Empleados extends javax.swing.JPanel {
                     String desc    = (String) emailTable.getValueAt(row, 2);
                     if(Validations.validateEmail(email)&& Validations.LettersAndLength(desc)){
                         ConnectionDB.updateEmail(id_User, email, desc);
-                        CargarTelTable("SELECT correo.id_correo, email, desc_correo FROM correo "
-                            + "JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");
+                        CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                            + "JOIN correo_empleado ON correo.id_correo= correo_empleado.id_correo");
                     }
                     break;
                     case "btnDelete":
@@ -969,8 +1128,8 @@ public class Empleados extends javax.swing.JPanel {
                         "Warning", JOptionPane.YES_NO_OPTION);
                     if(option == JOptionPane.YES_OPTION){
                         ConnectionDB.CDU("DELETE FROM telefono where id_telefono ="+id_User);
-                        CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato "
-                            + "ON telefono.id_telefono= tel_candidato.id_telefono");
+                        CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo "
+                            + "JOIN correo_empleado ON correo.id_correo= correo_empleado.id_correo");
                     }
                     break;
                 }
@@ -1036,33 +1195,157 @@ public class Empleados extends javax.swing.JPanel {
     }//GEN-LAST:event_addressTableMouseClicked
 
     private void FaltasTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FaltasTableMouseClicked
-        // TODO add your handling code here:
+        int column = FaltasTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/FaltasTable.getRowHeight(); 
+
+        if(row < FaltasTable.getRowCount() && row >= 0 && column<FaltasTable.getColumnCount() && column>=0){
+            Object value = FaltasTable.getValueAt(row, column);
+            Object id = FaltasTable.getValueAt(row, 1);
+            Object folio = FaltasTable.getValueAt(row, 0);
+            
+            int fol = (int) folio;
+            
+            int id_user = (int) id;
+            
+            CargarTabla("SELECT * FROM empleado WHERE id_empleado = "+id_user+" and active_em = 1");
+            CargarFaltasTable("SELECT * FROM faltas WHERE id_empleado = "+id_user);
+            CargarEmailTable("SP_Get_Email_Empleado '"+id_user+"'");
+            CargarTelTable("SP_Get_Tel_Empleado '"+id_user+"'"); 
+            CargarAddressTable("SP_Get_Add_Empleado '"+id_user+"'");
+            CargarAsisTable("SELECT * FROM asistencia WHERE id_empleado ="+id_user);
+            
+            ResultSet res = ConnectionDB.Query("SP_COUNT_FALTAS '"+id_user+"'");
+            
+            try{
+                if(res.next()){
+                    FaltasTotals.setText(String.valueOf(res.getInt(1)));
+                }
+            }catch(SQLException e){
+            }
+            
+            if(value instanceof JButton){
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+                
+                switch(boton.getName()){
+                    case "btnDelete":
+                        
+                        int option = JOptionPane.showConfirmDialog(null, "¿Estás seguro de eliminar la falta?", "Falta", JOptionPane.YES_NO_OPTION);
+                        
+                        if(option == JOptionPane.YES_OPTION){
+                            ConnectionDB.CDU("DELETE FROM faltas WHERE folio_falta = "+fol);
+                        }
+                        break;       
+                }
+            }   
+        }
     }//GEN-LAST:event_FaltasTableMouseClicked
 
     private void AsistenciasTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AsistenciasTableMouseClicked
-        // TODO add your handling code here:
+        int column = AsistenciasTable.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY()/AsistenciasTable.getRowHeight(); 
+        
+        if(row < AsistenciasTable.getRowCount() && row >= 0 && column<AsistenciasTable.getColumnCount() && column>=0){
+            Object value = AsistenciasTable.getValueAt(row, column);
+            Object id = AsistenciasTable.getValueAt(row, 2);
+            
+            int id_user = (int) id;
+            
+            CargarTabla("SELECT * FROM empleado WHERE id_empleado = "+id_user+" and active_em = 1");
+            CargarFaltasTable("SELECT * FROM faltas WHERE id_empleado = "+id_user);
+            CargarEmailTable("SP_Get_Email_Empleado '"+id_user+"'");
+            CargarTelTable("SP_Get_Tel_Empleado '"+id_user+"'"); 
+            CargarAddressTable("SP_Get_Add_Empleado '"+id_user+"'");
+            
+            ResultSet res = ConnectionDB.Query("SP_COUNT_ASISTENCIAS '"+id_user+"'");
+            
+            try{
+                if(res.next()){
+                    cantidadAsistencias.setText(String.valueOf(res.getInt(1)));
+                }
+            }catch(SQLException e){
+            }
+            
+            if(value instanceof JButton){
+                ((JButton) value).doClick();
+                JButton boton = (JButton) value;
+                
+                switch(boton.getName()){
+                    case "btnDelete":
+                        
+                        int option = JOptionPane.showConfirmDialog(null, "¿Estás seguro de eliminar la falta?", "Falta", JOptionPane.YES_NO_OPTION);
+                        
+                        if(option == JOptionPane.YES_OPTION){
+                            ConnectionDB.CDU("DELETE FROM asistencias WHERE  = "+id_user);
+                            
+                        }
+                        break;       
+                }
+            }   
+            
+            
+        
+        }
     }//GEN-LAST:event_AsistenciasTableMouseClicked
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void AddFaltaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddFaltaMouseClicked
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        //String consulta = "INSERT INTO faltas"
+        JFrame frame = new JFrame("Agregar Telefono");
+        JPanel pane = new JPanel();
+        pane.setLayout(new GridLayout(0, 2, 2, 2));
+        
+        JTextField idEmpleadoJ = new JTextField();
+        JTextField fecha_J = new JTextField();
+        fecha_J.setText("2017-12-4");
+        
+        pane.add(new JLabel("id Empleado: "));
+        pane.add(idEmpleadoJ);
+        
+        pane.add(new JLabel("Fecha Falta"));
+        pane.add(fecha_J);
+        
+        int option = JOptionPane.showConfirmDialog(frame, pane, "Falta", JOptionPane.OK_OPTION);
+        if(option==JOptionPane.OK_OPTION){
+            int id_empleado = Integer.parseInt(idEmpleadoJ.getText());
+            String fecha = fecha_J.getText();
+            
+            String consulta = "SP_Insert_Falta '"+id_empleado+"', '"+fecha+"'";
+            
+            ConnectionDB.CDU(consulta);
+            CargarFaltasTable("SELECT * FROM faltas");
+            
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Por favor llene todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+    }//GEN-LAST:event_AddFaltaMouseClicked
+
+    private void buscarNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_buscarNombreActionPerformed
 
     
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddEmployee;
+    private javax.swing.JButton AddFalta;
     private javax.swing.JTable AsistenciasTable;
     private javax.swing.JTable FaltasTable;
+    private javax.swing.JTextField FaltasTotals;
     private javax.swing.JPanel Table;
     private javax.swing.JTable addressTable;
     private javax.swing.JButton buscarID;
     private javax.swing.JTextField buscarIdTxt;
     private javax.swing.JButton buscarNombre;
     private javax.swing.JTextField buscarNombreTxt;
+    private javax.swing.JTextPane cantidadAsistencias;
     private javax.swing.JTable emailTable;
     private javax.swing.JTable empleadosTable;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -1073,13 +1356,13 @@ public class Empleados extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
     private javax.swing.JScrollPane jScrollPane14;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable phonesTable;
     private javax.swing.JButton showAllUsersBtn;
     // End of variables declaration//GEN-END:variables

@@ -37,6 +37,9 @@ public class menuV2 extends javax.swing.JFrame {
 
         mainPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         Users = new javax.swing.JMenu();
         AddUser = new javax.swing.JMenuItem();
@@ -49,23 +52,48 @@ public class menuV2 extends javax.swing.JFrame {
         setIconImage(getIconImage());
         setUndecorated(true);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI Symbol", 2, 24)); // NOI18N
         jLabel1.setText("Bienvenido");
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tecsos.png"))); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Symbol", 2, 24)); // NOI18N
+        jLabel3.setText("Seleccione una de las opciones del menú en la esquina superior izquierda");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI Symbol", 2, 24)); // NOI18N
+        jLabel4.setText("Departamento de Recursos Humanos");
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(512, 512, 512)
-                .addComponent(jLabel1)
-                .addContainerGap(792, Short.MAX_VALUE))
+                .addGap(201, 201, 201)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(336, 336, 336)
+                        .addComponent(jLabel2))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(372, 372, 372)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(237, 237, 237)
+                        .addComponent(jLabel4)))
+                .addContainerGap(375, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(66, 66, 66)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
-                .addContainerGap(663, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addContainerGap(452, Short.MAX_VALUE))
         );
 
         Users.setText("Menu");
@@ -252,6 +280,9 @@ public class menuV2 extends javax.swing.JFrame {
     private javax.swing.JMenu Users;
     private javax.swing.JMenuItem employeesBtn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables

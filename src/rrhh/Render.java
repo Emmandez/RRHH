@@ -17,18 +17,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class Render extends DefaultTableCellRenderer {
 
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
-            boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, 
+            boolean isSelected, boolean hasFocus, int row, int column) {
         //To change body of generated methods, choose Tools | Templates.
-        
         if(value instanceof JButton){
             JButton btn = (JButton)value;
             return btn;
         }
-        
         return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column); 
     }
-    
-    
-    
 }

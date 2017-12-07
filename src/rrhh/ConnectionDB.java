@@ -141,6 +141,7 @@ public class ConnectionDB {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage(), "Error de Conexión", JOptionPane.ERROR_MESSAGE);
         }
         return respuesta;
+        //Entasdasdasd ''
         
     }
     
@@ -246,7 +247,7 @@ public class ConnectionDB {
         }
     }
     
-    public static void updateApplicant(String name, String lastn, String lastnm, String expLabo, String salario,
+    public static void updateApplicant(String name, String lastn, String lastnm, String expLabo, int salario,
             String puesto, int id_candidato){
         String consulta = "SP_Update_Candidato '"+id_candidato+"', '"+name+"', '"+lastn+"', '"+lastnm+"', '"
                 +expLabo+"', '"+salario+"', '"+puesto+"'";
