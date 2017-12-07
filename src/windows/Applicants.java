@@ -745,6 +745,17 @@ public class Applicants extends javax.swing.JPanel {
                             if(option == JOptionPane.YES_OPTION){
                                 ConnectionDB.deleteApplicantId(id_User);
                                 CargarTabla("SP_Show_Candidatos");
+                                CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
+                                CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_candidato ON correo.id_correo= correo_candidato.id_correo");        
+                                CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM candidato "
+                                        + "JOIN dir_candidato ON dir_candidato.id_candidato = candidato.id_candidato "
+                                        + "JOIN direccion ON direccion.id_direccion=dir_candidato.id_direccion "
+                                        + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                        + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                                        + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                                        + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                                        + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                                        + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
                             }       
                             break;
                         }
@@ -973,11 +984,12 @@ public class Applicants extends javax.swing.JPanel {
                             String extension = ext.getText();
                             String descTel = desc.getText();
                             
-                            if(Validations.numericPhoneNumber(numeroTel) 
-                                    && Validations.numericPhoneNumber(extension) && Validations.validateJustLetters(descTel)){
+                            if(Validations.validateNumbers(numeroTel) 
+                                    && Validations.validateNumbers(extension)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);   
                                 ConnectionDB.phoneCandidato(id_User);
                                 CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_candidato ON telefono.id_telefono= tel_candidato.id_telefono");
+                                
                             }else{
                                 JOptionPane.showMessageDialog(null, "Los campos número de teléfono y extensión solo admiten números \n"
                                         + "El campo descripción sólo admite letras\n"

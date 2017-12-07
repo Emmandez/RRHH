@@ -277,8 +277,8 @@ public class Empleados extends javax.swing.JPanel {
                 v.add(res.getString(5));
                 v.add(res.getString(6));
                 v.add(res.getString(7));
+                v.add(res.getString(10));//horario
                 v.add(res.getString(8));
-                v.add(res.getString(9));
                 //add email, phone and address
                 v.add(btnAddress);
                 v.add(btnEmail);
@@ -339,6 +339,9 @@ public class Empleados extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         FaltasTotals = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        asistenciaID = new javax.swing.JTextField();
+        btnChecar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 0, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -739,14 +742,32 @@ public class Empleados extends javax.swing.JPanel {
         Table.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 250, 160, -1));
 
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Asistencias Totales");
-        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 230, -1, -1));
+        jLabel3.setText("Checar Asistencia");
+        Table.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 410, -1, -1));
 
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Faltas Totales");
-        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 320, -1, -1));
-        Table.add(FaltasTotals, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 340, 150, -1));
+        Table.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 280, 90, -1));
+        Table.add(FaltasTotals, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 300, 160, -1));
         FaltasTotals.setEnabled(false);
+
+        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel11.setText("Asistencias Totales");
+        Table.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(1210, 230, -1, -1));
+        Table.add(asistenciaID, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 430, 110, -1));
+
+        btnChecar.setText("Checar");
+        btnChecar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnChecarMouseClicked(evt);
+            }
+        });
+        btnChecar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChecarActionPerformed(evt);
+            }
+        });
+        Table.add(btnChecar, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 460, -1, -1));
 
         add(Table, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1366, 768));
     }// </editor-fold>//GEN-END:initComponents
@@ -862,8 +883,25 @@ public class Empleados extends javax.swing.JPanel {
                         int option = JOptionPane.showConfirmDialog(null, "Do you really want to delete this user?",
                             "Warning", JOptionPane.YES_NO_OPTION);
                         if(option == JOptionPane.YES_OPTION){
-                            ConnectionDB.deleteApplicantId(id_User);
-                            CargarTabla("SELECT * FROM empleado WHERE active_em=1");
+                            ConnectionDB.CDU("DELETE FROM empleado WHERE id_empleado="+id_User);
+                            //ConnectionDB.CDU("DELETE FROM asistencia WHERE id_empleado="+id_User);
+                            CargarTabla("SELECT * FROM empleado WHERE active_em = 1");
+                            CargarTelTable("SELECT telefono.id_telefono, numero, extension, desc_tel FROM telefono JOIN tel_empleado ON telefono.id_telefono= tel_empleado.id_telefono");
+                            CargarEmailTable("SELECT correo.id_correo, email, desc_correo FROM correo JOIN correo_empleado ON correo.id_correo= correo_empleado.id_correo");        
+                            CargarAddressTable("SELECT direccion.id_direccion, calle, num_int, num_ext, nom_col, cp, nom_ciudad, nom_estado FROM empleado "
+                                    + "JOIN dir_empleado ON dir_empleado.id_empleado = empleado.id_empleado "
+                                    + "JOIN direccion ON direccion.id_direccion=dir_empleado    .id_direccion "
+                                    + "JOIN dir_colonia ON direccion.id_direccion=dir_colonia.id_direccion "
+                                    + "JOIN colonia ON dir_colonia.id_colonia = colonia.id_colonia "
+                                    + "JOIN colonia_ciudad ON colonia.id_colonia = colonia_ciudad.id_colonia "
+                                    + "JOIN ciudad ON colonia_ciudad.id_ciudad = ciudad.id_ciudad "
+                                    + "JOIN ciudad_estado ON ciudad.id_ciudad=ciudad_estado.id_ciudad "
+                                    + "JOIN estado ON ciudad_estado.id_estado=estado.id_estado");
+                            CargarFaltasTable("SELECT * FROM faltas");
+                            CargarAsisTable("SELECT * FROM asistencia");
+                            
+                            
+                            
                         }
                         break;
                     }
@@ -926,12 +964,10 @@ public class Empleados extends javax.swing.JPanel {
                             String numeroTel = phoneN.getText();
                             String descTel = desc.getText();
                             String extension = ext.getText();
-                            
-                            String x = String.valueOf(genero_J.getSelectedItem());
-                            
-                            //conexion.metodoEquipo();
 
-                            if(Validations.numericPhoneNumber(numeroTel)){
+                            //conexion.metodoEquipo();
+                            System.out.println(Validations.validateNumbers(numeroTel));
+                            if(Validations.validateNumbers(numeroTel)){
                                 ConnectionDB.insertPhone(numeroTel, extension, descTel);
                                 //conexión.consulta()
                                 ConnectionDB.phoneCandidato(id_User);
@@ -1068,11 +1104,6 @@ public class Empleados extends javax.swing.JPanel {
             if(value instanceof JButton){
                 ((JButton) value).doClick();
                 JButton boton = (JButton) value;
-                
-                JTextField x = new JTextField(); //campo de texto
-                
-                String[] status = {"bueno", "regular", "malo"};
-                JComboBox status_J = new JComboBox(genArray);
                 
                 switch (boton.getName()) {
                     case "btnUpdate":
@@ -1328,6 +1359,23 @@ public class Empleados extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_buscarNombreActionPerformed
 
+    private void btnChecarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChecarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChecarActionPerformed
+
+    private void btnChecarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChecarMouseClicked
+        String id = asistenciaID.getText();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        
+        if(!id.isEmpty()){
+            ConnectionDB.CDU("SP_Entrada '"+id+"', '"+timeStamp+"'");
+            CargarAsisTable("SELECT * FROM asistencia");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Ingrese un id en el campo de texto");
+        }
+    }//GEN-LAST:event_btnChecarMouseClicked
+
     
     
 
@@ -1339,6 +1387,8 @@ public class Empleados extends javax.swing.JPanel {
     private javax.swing.JTextField FaltasTotals;
     private javax.swing.JPanel Table;
     private javax.swing.JTable addressTable;
+    private javax.swing.JTextField asistenciaID;
+    private javax.swing.JButton btnChecar;
     private javax.swing.JButton buscarID;
     private javax.swing.JTextField buscarIdTxt;
     private javax.swing.JButton buscarNombre;
@@ -1348,6 +1398,7 @@ public class Empleados extends javax.swing.JPanel {
     private javax.swing.JTable empleadosTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
